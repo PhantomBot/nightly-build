@@ -1,5 +1,11 @@
 # nightly-build
-This repository contains a nightly build of PhantomBot from the latest master branch.
+This repository contains a nightly build of PhantomBot from the latest master branch.  The nightly-build release is built on the following server configuration:
+
+    CentOS Linux 7 (7.2.1511)
+    Oracle Java 1.8.0_102
+    OpenJDK 1.8.0_101
+    
+Two build files are present.  One of which is built with Oracle Java and the other with OpenJDK.  Review the name of the nightly-build file to determine which is built with OpenJDK.
 
 # Notice
 Use this nightly build at your own risk!  The master branch is not always fully tested.  There may be new features added which may cause problems with your PhantomBot environment.  It is not wise to just copy off scripts without the new core and possibly the library directories.  
