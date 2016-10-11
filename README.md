@@ -3,7 +3,7 @@ This repository contains a nightly build of PhantomBot from the latest master br
 
     CentOS Linux 7 (7.2.1511)
     Oracle Java 1.8.0_102
-    OpenJDK 1.8.0_101
+    OpenJDK 1.8.0_102
     
 Two build files are present.  One of which is built with Oracle Java and the other with OpenJDK.  Review the name of the nightly-build file to determine which is built with OpenJDK.
 
