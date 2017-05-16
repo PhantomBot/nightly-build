@@ -30,6 +30,16 @@ Please report any bugs to the Community page URL provided at the end of this sec
 PhantomBot Community Nightly Build Bug Reports:       
 https://community.phantombot.net/category/23/bug-reports
 
+# Getting Versions from PhantomBot 2.3.6+
+The Java and OS versions are presented when PhantomBot starts up in the Console, some examples:
+```
+[05-16-2017 @ 16:42:26.423 GMT] Detected Java 1.8.0_102 running on Linux 4.8.13-100.fc23.x86_64 (amd64)
+
+[05-16-2017 @ 16:47:10.158 GMT] Detected Java 1.8.0_131 running on Windows 10 10.0 (amd64)
+
+[05-16-2017 @ 16:48:48.719 GMT] Detected Java 1.8.0_102 running on Mac OS X 10.12.4 (x86_64)
+```
+
 # Getting Versions from the OS and Java
 Linux: View the contents of ```/etc/system-release```.  This typically contains the distribution and version.    
 Windows: From the command prompt run the ```ver``` command.    
