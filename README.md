@@ -1,4 +1,4 @@
-# <img alt="PhantomBot" src="https://phantombot.tv/img/new-logo-dark-v2.png" width="600px"/>
+# <img alt="PhantomBot" src="https://phantombot.tv/img/new-logo-dark-v2.png" width="400px"/>
 
 # nightly-build
 This repository contains a nightly build of PhantomBot from the latest master branch.  The nightly-build release is built on the following server configuration:
@@ -10,10 +10,10 @@ This repository contains a nightly build of PhantomBot from the latest master br
 Two build files are present.  One of which is built with Oracle Java and the other with OpenJDK.  Review the name of the nightly-build file to determine which is built with OpenJDK.
 
 # Notice
-Use this nightly build at your own risk!  The master branch is not always fully tested.  There may be new features added which may cause problems with your PhantomBot environment.  Do not take parts of the nightly build and install into an earlier version of PhantomBot unless told to by a developer.  The PhantomBot core, scripts and web modules are all tightly related.
+Use this nightly build at your own risk!  The master branch is not always fully tested.  The Nightly Build may not even launch.  There may be new features added which may cause problems with your PhantomBot environment.  Do not take parts of the nightly build and install into an earlier version of PhantomBot unless told to by a developer.  The PhantomBot core, scripts and web modules are all tightly related.
 
 # Support
-No support will be provided for the nightly build.  Please report bugs, but, we will not answer questions regarding how to setup, install, or configure new features.  Typically instructions for new features will be included on the Nightly Build page for items that we would like folks to test when they are ready to be tested.
+**No support will be provided for the nightly build.**  Please report bugs, but, we will not answer questions regarding how to setup, install, or configure new features.  Typically instructions for new features will be included on the Nightly Build page for items that we would like folks to test when they are ready to be tested.
 
 # Reporting Bugs
 Please report any bugs to the Community page URL provided at the end of this section. Do ensure that your bug report includes:
