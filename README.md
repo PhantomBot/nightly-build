@@ -28,7 +28,7 @@ Please report any bugs to the Community page URL provided at the end of this sec
 * Any changes that you may have made in your environment.  This would include any changes to the scripts, for example.
 
 PhantomBot Community Nightly Build Bug Reports:       
-https://community.phantombot.tv/category/23/bug-reports
+https://community.phantombot.tv/c/nightly-builds/bug-reports
 
 # Getting Versions from PhantomBot 2.3.6+
 The Java and OS versions are presented when PhantomBot starts up in the Console, some examples:
