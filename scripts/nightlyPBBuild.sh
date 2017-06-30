@@ -51,7 +51,7 @@ cd nightly
 /usr/local/bin/hub clone https://github.com/PhantomBot/PhantomBot.git 2>/dev/null 1>&2
 cd PhantomBot
 PB_VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>) { ($ver) = $_ =~ m/\s+<property name=\"version\" value=\"(.*)\" \/>/; } print $ver;')
-/usr/bin/ant clean 2>/dev/null 1>&2
+/usr/bin/ant distclean clean 2>/dev/null 1>&2
 /usr/bin/ant -Dnightly=nightly_build -Dversion=${PB_VERSION}-NB-$(date +%Y%m%d) 2>/dev/null 1>&2
 if [[ $? -ne 0 ]]; then
     exit 1
@@ -63,7 +63,7 @@ cp -f ${MASTER}/PhantomBot/dist/PhantomBot*zip ${HISTORICAL}/${BUILD_DATED}
 # Use OpenJDK
 export JAVA_HOME="/etc/alternatives/java_sdk_1.8.0_openjdk"
 export PATH=${JAVA_HOME}/bin:${PATH}
-/usr/bin/ant clean 2>/dev/null 1>&2
+/usr/bin/ant distclean clean 2>/dev/null 1>&2
 /usr/bin/ant -Dnightly=nightly_build -Dversion=${PB_VERSION}-NB-$(date +%Y%m%d) 2>/dev/null 1>&2
 if [[ $? -ne 0 ]]; then
     exit 1
