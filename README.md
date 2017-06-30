@@ -16,12 +16,11 @@ Use this nightly build at your own risk!  The master branch is not always fully 
 **No support will be provided for the nightly build.**  Please report bugs, but, we will not answer questions regarding how to setup, install, or configure new features.  Typically instructions for new features will be included on the Nightly Build page for items that we would like folks to test when they are ready to be tested.
 
 # Reporting Bugs
-Please report any bugs to the Community page URL provided at the end of this section. Do ensure that your bug report includes:
+Please report any bugs to the Community page URL provided at the end of this section. Do ensure that your bug report includes everything we ask for on in the Bug Report template:
 
-* Date and/or Build ID of the Nightly Build being used; Example: 18 Jul 2016 (Git Repo: 9d29388)
-* OS and Java version.  Some example formats you could provide:    
-    Windows 10.0.10586 - Java(TM) SE Runtime Environment (build 1.8.0_92-b14)    
-    CentOS Linux release 7.2.1511 - OpenJDK Runtime Environment (build 1.8.0_91-b14)
+* Nightly Build version - include the PhantomBot Version and Build Revision from startup.
+* OS and Java version.  Take this from the startup of PhantomBot.
+* Browser version, if using the Control Panel.
 * Steps to reproduce the bug.
 * Any relevant log information.  This may be from the console, logs/core-error, logs/error, or stacktrace file.
 * Screenshots as appropriate, for example, reporting a UI issue in the Control Panel.
@@ -30,7 +29,7 @@ Please report any bugs to the Community page URL provided at the end of this sec
 PhantomBot Community Nightly Build Bug Reports:       
 https://community.phantombot.tv/c/nightly-builds/bug-reports
 
-# Getting Versions from PhantomBot 2.3.6+
+# Getting Java, OS and PhantomBot Versions from PhantomBot at Startup
 The Java and OS versions are presented when PhantomBot starts up in the Console, some examples:
 ```
 [05-16-2017 @ 16:42:26.423 GMT] Detected Java 1.8.0_102 running on Linux 4.8.13-100.fc23.x86_64 (amd64)
@@ -40,19 +39,14 @@ The Java and OS versions are presented when PhantomBot starts up in the Console,
 [05-16-2017 @ 16:48:48.719 GMT] Detected Java 1.8.0_102 running on Mac OS X 10.12.4 (x86_64)
 ```
 
-# Getting Versions from the OS and Java
-Linux: View the contents of ```/etc/system-release```.  This typically contains the distribution and version.    
-Windows: From the command prompt run the ```ver``` command.    
-Java: From the command prompt run ```java -version```
-
-# Where to Find the PhantomBot Version and Build ID
-When you download PhantomBot, the build date and the Git Repo are located on the description line of the download.  If you have not previously captured this, you may, at a minimum, provide the build revision, which is provided when PhantomBot first boots up:    
+The version of PhantomBot as well as the Build Revision is also present at startup:
 ```
 % ./launch.sh 
-[07-18-2016 @ 17:05:48.675 GMT] The working directory is: /usr/local/opt/iobot2
-
-[07-18-2016 @ 17:05:48.694 GMT] PhantomBot Version 2.1.0.1
-[07-18-2016 @ 17:05:48.694 GMT] Build revision db1a26f
+[06-30-2017 @ 04:54:18.503 GMT] The working directory is: /usr/local/opt/iobot2
+[06-30-2017 @ 04:54:18.507 GMT] Detected Java 1.8.0_102 running on Linux 4.8.13-100.fc23.x86_64 (amd64)
+[06-30-2017 @ 04:54:18.512 GMT] 
+[06-30-2017 @ 04:54:18.512 GMT] PhantomBot Version: 2.3.7.1-NB-20170629
+[06-30-2017 @ 04:54:18.512 GMT] Build Revision: 5f8f2c4
 ```
 
 # Comparing Versions
