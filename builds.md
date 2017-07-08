@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Jul 08 05:00:04 2017 (MDT-0600) (Repo: 8876d9a) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/48dbdff...8876d9a))
 ###### Nightly Build at Jul 07 05:00:02 2017 (MDT-0600) (Repo: 48dbdff) (No Changes)
 ###### Nightly Build at Jul 06 05:00:01 2017 (MDT-0600) (Repo: 48dbdff) (No Changes)
 ###### Nightly Build at Jul 05 05:00:01 2017 (MDT-0600) (Repo: 48dbdff) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Jun 27 05:00:02 2017 (MDT-0600) (Repo: ec40ab2) (No Changes)
 ###### Nightly Build at Jun 26 12:16:42 2017 (MDT-0600) (Repo: ec40ab2) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/9ed9d2e...ec40ab2))
 ###### Nightly Build at Jun 26 12:09:20 2017 (MDT-0600) (Repo: 9ed9d2e) (No Changes)
-###### Nightly Build at Jun 26 05:00:01 2017 (MDT-0600) (Repo: 9ed9d2e) (No Changes)
