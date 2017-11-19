@@ -1,4 +1,4 @@
-# <img alt="PhantomBot" src="https://phantombot.tv/img/new-logo-dark-v2.png" width="400px"/>
+# <img alt="PhantomBot" src="https://phantombot.tv/img/new-logo-dark-v2.png" width="600px"/>
 
 # nightly-build
 This repository contains a nightly build of PhantomBot from the latest master branch.  The nightly-build release is built on the following server configuration:
