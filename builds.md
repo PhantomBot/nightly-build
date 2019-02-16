@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Feb 16 05:00:01 2019 (MST-0700) (Repo: 1a3cf47) (No Changes)
 ###### Nightly Build at Feb 15 05:00:01 2019 (MST-0700) (Repo: 1a3cf47) (No Changes)
 ###### Nightly Build at Feb 14 05:00:01 2019 (MST-0700) (Repo: 1a3cf47) (No Changes)
 ###### Nightly Build at Feb 13 05:00:01 2019 (MST-0700) (Repo: 1a3cf47) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Jan 30 05:00:01 2019 (MST-0700) (Repo: 940061a) (No Changes)
 ###### Nightly Build at Jan 29 05:00:01 2019 (MST-0700) (Repo: 940061a) (No Changes)
 ###### Nightly Build at Jan 28 05:00:01 2019 (MST-0700) (Repo: 940061a) (No Changes)
-###### Nightly Build at Jan 27 05:00:01 2019 (MST-0700) (Repo: 940061a) (No Changes)
