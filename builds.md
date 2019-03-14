@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Mar 14 05:00:01 2019 (MDT-0600) (Repo: c0d1181) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/ba11581...c0d1181))
 ###### Nightly Build at Mar 13 05:00:01 2019 (MDT-0600) (Repo: ba11581) (No Changes)
 ###### Nightly Build at Mar 12 05:00:01 2019 (MDT-0600) (Repo: ba11581) (No Changes)
 ###### Nightly Build at Mar 11 05:00:02 2019 (MDT-0600) (Repo: ba11581) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Feb 25 05:00:01 2019 (MST-0700) (Repo: 6fb0e56) (No Changes)
 ###### Nightly Build at Feb 24 10:54:37 2019 (MST-0700) (Repo: 6fb0e56) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/5922a1a...6fb0e56))
 ###### Nightly Build at Feb 24 10:13:30 2019 (MST-0700) (Repo: 5922a1a) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/7f23ec0...5922a1a))
-###### Nightly Build at Feb 24 05:00:01 2019 (MST-0700) (Repo: 7f23ec0) (No Changes)
