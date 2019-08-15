@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Aug 15 05:00:01 2019 (MDT-0600) (Repo: a385b6b) (No Changes)
 ###### Nightly Build at Aug 14 05:00:01 2019 (MDT-0600) (Repo: a385b6b) (No Changes)
 ###### Nightly Build at Aug 13 05:00:01 2019 (MDT-0600) (Repo: a385b6b) (No Changes)
 ###### Nightly Build at Aug 12 05:00:01 2019 (MDT-0600) (Repo: a385b6b) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Jul 28 05:00:01 2019 (MDT-0600) (Repo: e8d4195) (No Changes)
 ###### Nightly Build at Jul 27 05:00:01 2019 (MDT-0600) (Repo: e8d4195) (No Changes)
 ###### Nightly Build at Jul 26 05:00:01 2019 (MDT-0600) (Repo: e8d4195) (No Changes)
-###### Nightly Build at Jul 25 05:00:01 2019 (MDT-0600) (Repo: e8d4195) (No Changes)
