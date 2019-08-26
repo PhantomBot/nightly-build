@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Aug 26 05:00:02 2019 (MDT-0600) (Repo: dbd0ef7) (No Changes)
 ###### Nightly Build at Aug 25 05:00:01 2019 (MDT-0600) (Repo: dbd0ef7) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/ca14a83...dbd0ef7))
 ###### Nightly Build at Aug 24 16:11:40 2019 (MDT-0600) (Repo: ca14a83) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/dbfc112...ca14a83))
 ###### Nightly Build at Aug 24 05:00:01 2019 (MDT-0600) (Repo: dbfc112) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Aug 18 14:23:20 2019 (MDT-0600) (Repo: 91de4ba) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/749fbf6...91de4ba))
 ###### Nightly Build at Aug 18 13:59:46 2019 (MDT-0600) (Repo: 749fbf6) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/cea2822...749fbf6))
 ###### Nightly Build at Aug 18 13:39:01 2019 (MDT-0600) (Repo: cea2822) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/772980e...cea2822))
-###### Nightly Build at Aug 18 05:00:01 2019 (MDT-0600) (Repo: 772980e) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/3bb488a...772980e))
