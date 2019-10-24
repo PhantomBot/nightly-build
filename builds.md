@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Oct 24 05:00:01 2019 (MDT-0600) (Repo: ae11871) (No Changes)
 ###### Nightly Build at Oct 23 05:00:01 2019 (MDT-0600) (Repo: ae11871) (No Changes)
 ###### Nightly Build at Oct 22 05:00:02 2019 (MDT-0600) (Repo: ae11871) (No Changes)
 ###### Nightly Build at Oct 21 05:00:01 2019 (MDT-0600) (Repo: ae11871) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Oct 06 05:00:01 2019 (MDT-0600) (Repo: 7cb0371) (No Changes)
 ###### Nightly Build at Oct 05 05:00:01 2019 (MDT-0600) (Repo: 7cb0371) (No Changes)
 ###### Nightly Build at Oct 04 05:00:01 2019 (MDT-0600) (Repo: 7cb0371) (No Changes)
-###### Nightly Build at Oct 03 05:00:01 2019 (MDT-0600) (Repo: 7cb0371) (No Changes)
