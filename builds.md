@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Nov 24 05:00:01 2019 (MST-0700) (Repo: d01c031) (No Changes)
 ###### Nightly Build at Nov 23 05:00:01 2019 (MST-0700) (Repo: d01c031) (No Changes)
 ###### Nightly Build at Nov 22 05:00:01 2019 (MST-0700) (Repo: d01c031) (No Changes)
 ###### Nightly Build at Nov 21 05:00:01 2019 (MST-0700) (Repo: d01c031) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Nov 06 05:00:01 2019 (MST-0700) (Repo: 101deb6) (No Changes)
 ###### Nightly Build at Nov 05 05:00:01 2019 (MST-0700) (Repo: 101deb6) (No Changes)
 ###### Nightly Build at Nov 04 05:00:01 2019 (MST-0700) (Repo: 101deb6) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/06770e4...101deb6))
-###### Nightly Build at Nov 03 05:00:01 2019 (MST-0700) (Repo: 06770e4) (No Changes)
