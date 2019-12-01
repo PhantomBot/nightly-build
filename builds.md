@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Dec 01 05:00:01 2019 (MST-0700) (Repo: d01c031) (No Changes)
 ###### Nightly Build at Nov 30 05:00:01 2019 (MST-0700) (Repo: d01c031) (No Changes)
 ###### Nightly Build at Nov 29 05:00:01 2019 (MST-0700) (Repo: d01c031) (No Changes)
 ###### Nightly Build at Nov 28 05:00:01 2019 (MST-0700) (Repo: d01c031) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Nov 13 05:00:01 2019 (MST-0700) (Repo: 101deb6) (No Changes)
 ###### Nightly Build at Nov 12 05:00:01 2019 (MST-0700) (Repo: 101deb6) (No Changes)
 ###### Nightly Build at Nov 11 05:00:01 2019 (MST-0700) (Repo: 101deb6) (No Changes)
-###### Nightly Build at Nov 10 05:00:01 2019 (MST-0700) (Repo: 101deb6) (No Changes)
