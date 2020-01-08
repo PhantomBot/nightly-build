@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 #
-# Copyright (C) 2016-2017 phantombot.tv
+# Copyright (C) 2016-2020 phantombot.tv
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,41 +18,32 @@
 #
 # nightlyPBBuild.sh
 #
-# Performs the Nightly Build of PhantomBot on IllusionaryOne's server.
-#
-# Configuration Notes:
-# The nightly-build area must be created using ssh pull rather than https so that
-# it can authenticate strictly via SSH key and not ask for username and password.
-#
-# This expects Oracle Java and OpenJDK to be installed.
-#
+# Performs the Nightly Build of PhantomBot.
 
-MASTER="/home/builder/nightly/"
-BUILDS="/home/builder/nightly-build/"
+MASTER="${HOME}/PhantomBot"
+BUILDS="${GITHUB_WORKSPACE}"
 HISTORICAL="${BUILDS}/historical/"
 DATE=$(date +%m%d%Y)
 FULLSTAMP=$(date +%m%d%Y.%H%M%S)
 COMMITSTR="Nightly Build at $(date '+%b %d %H:%M:%S %Y (%Z%z)')"
 BUILD="PhantomBot-nightly.zip"
+LIN_BUILD="PhantomBot-nightly-lin.zip"
+WIN_BUILD="PhantomBot-nightly-win.zip"
+MAC_BUILD="PhantomBot-nightly-mac.zip"
+ARM_BUILD="PhantomBot-nightly-arm.zip"
 BUILD_DATED="PhantomBot-nightly-${FULLSTAMP}.zip"
-OPENJDK_BUILD="PhantomBot-nightly-openjdk.zip"
-OPENJDK_BUILD_DATED="PhantomBot-nightly-openjdk-${FULLSTAMP}.zip"
 LANG="en_US.UTF-8"
-LAST_REPO_VERSION=$(cat ~/.last_repo_version)
 
-# Use Oracle Java
-export JAVA_HOME="/usr/java/latest"
-export PATH=${JAVA_HOME}/bin:${PATH}
+cd ${BUILDS}
+LAST_REPO_VERSION=$(cat last_repo_version)
 
-cd /home/builder
-rm -Rf nightly
-mkdir nightly
-cd nightly
-/usr/local/bin/hub clone https://github.com/PhantomBot/PhantomBot.git 2>/dev/null 1>&2
+cd ${HOME}
+
+git clone https://github.com/PhantomBot/PhantomBot.git 2>/dev/null 1>&2
 cd PhantomBot
 PB_VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>) { ($ver) = $_ =~ m/\s+<property name=\"version\" value=\"(.*)\" \/>/; } print $ver;')
-/usr/bin/ant distclean clean 2>/dev/null 1>&2
-/usr/bin/ant -Dnightly=nightly_build -Dversion=${PB_VERSION}-NB-$(date +%Y%m%d) 2>/dev/null 1>&2
+ant distclean clean 2>/dev/null 1>&2
+ant -Dnightly=nightly_build -Dversion=${PB_VERSION}-NB-$(date +%Y%m%d) 2>/dev/null 1>&2
 if [[ $? -ne 0 ]]; then
     exit 1
 fi
@@ -60,16 +51,13 @@ REPO_VERSION=$(git rev-parse --short HEAD)
 cp -f ${MASTER}/PhantomBot/dist/PhantomBot*zip ${BUILDS}/${BUILD}
 cp -f ${MASTER}/PhantomBot/dist/PhantomBot*zip ${HISTORICAL}/${BUILD_DATED}
 
-# Use OpenJDK
-export JAVA_HOME="/etc/alternatives/java_sdk_1.8.0_openjdk"
-export PATH=${JAVA_HOME}/bin:${PATH}
-/usr/bin/ant distclean clean 2>/dev/null 1>&2
-/usr/bin/ant -Dnightly=nightly_build -Dversion=${PB_VERSION}-NB-$(date +%Y%m%d) 2>/dev/null 1>&2
-if [[ $? -ne 0 ]]; then
-    exit 1
-fi
-cp -f ${MASTER}/PhantomBot/dist/PhantomBot*zip ${BUILDS}/${OPENJDK_BUILD}
-cp -f ${MASTER}/PhantomBot/dist/PhantomBot*zip ${HISTORICAL}/${OPENJDK_BUILD_DATED}
+PBFOLDER=PhantomBot-${PB_VERSION}-NB-$(date +%Y%m%d)
+
+cd ${MASTER}/PhantomBot/dist/
+zip -r ${BUILDS}/${LIN_BUILD} ${PBFOLDER} -x 'java-runtime/*' -x 'java-runtime-macos/*' -x 'launch.bat'
+zip -r ${BUILDS}/${WIN_BUILD} ${PBFOLDER} -x 'java-runtime-linux/*' -x 'java-runtime-macos/*' -x 'launch.sh' -x 'launch-service.sh'
+zip -r ${BUILDS}/${MAC_BUILD} ${PBFOLDER} -x 'java-runtime-linux/*' -x 'java-runtime/*' -x 'launch.bat'
+zip -r ${BUILDS}/${ARM_BUILD} ${PBFOLDER} -x 'java-runtime-linux/*' -x 'java-runtime/*' -x 'java-runtime-macos/*' -x 'launch.bat'
 
 cd ${BUILDS}
 git pull 2>/dev/null 1>&2
@@ -81,10 +69,15 @@ fi
 cat builds.md | perl -e 'while(<STDIN>) { if ($_ =~ /------/ ) { print $_; print "###### $ENV{BUILD_STR}\n"; } else { print $_; } }' > builds.new
 head -25 builds.new > builds.md
 rm -f builds.new
-git add ${BUILD} ${OPENJDK_BUILD} historical/${BUILD_DATED} historical/${OPENJDK_BUILD_DATED} builds.md 2>/dev/null 1>&2
+echo ${REPO_VERSION} > last_repo_version
+git add ${BUILD} ${LIN_BUILD} ${WIN_BUILD} ${MAC_BUILD} ${ARM_BUILD} historical/${BUILD_DATED} builds.md last_repo_version 2>/dev/null 1>&2
 cd ${BUILDS}/historical
 find . -mtime +20 -exec git rm {} \; 2>/dev/null 1>&2
 git commit -m "${BUILD_STR}" 2>/dev/null 1>&2
-git push 2>/dev/null 1>&2
-
-echo ${REPO_VERSION} > ~/.last_repo_version
+if [[ "${DRY_RUN}" = "false" ]]; then
+    git push "https://${GITHUB_ACTOR}:${TOKEN_GITHUB}@github.com/${GITHUB_REPOSITORY}.git" 2>/dev/null 1>&2
+else
+    echo "$(ls)"
+    echo.
+    echo "$(unzip -l ${ARM_BUILD})"
+fi

@@ -1,13 +1,21 @@
 # <img alt="PhantomBot" src="https://phantombot.tv/img/new-logo-dark-v2.png" width="600px"/>
 
 # nightly-build
-This repository contains a nightly build of PhantomBot from the latest master branch.  The nightly-build release is built on the following server configuration:
-
-    CentOS Linux 7 (7.4.1708)
-    Oracle Java 1.8.0_131
-    OpenJDK 1.8.0_144
+This repository contains a nightly build of PhantomBot from the latest master branch.  The nightly-build release is built on the latest available Ubuntu environment for GitHub Actions. You can find information about the environment [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/virtual-environments-for-github-hosted-runners#supported-runners-and-hardware-resources).
     
-Two build files are present.  One of which is built with Oracle Java and the other with OpenJDK.  Review the name of the nightly-build file to determine which is built with OpenJDK.
+Five build files are present.
+* _PhantomBot-nightly.zip_ - Contains the entire bot, with all of the Java environments from the individual builds below.
+* _PhantomBot-nightly-lin.zip_ - Contains the entire bot, but only the Java environment for Linux 64-bit (x86_64).
+* _PhantomBot-nightly-win.zip_ - Contains the entire bot, but only the Java environment for Windows 64-bit (x86_64).
+* _PhantomBot-nightly-mac.zip_ - Contains the entire bot, but only the Java environment for macOS 64-bit (x86_64).
+* _PhantomBot-nightly-arm.zip_ - Contains the entire bot, but no Java environment. Use this for Raspberry Pi or Linux 32-bit (x86) with OpenJDK 11. The launch.sh script will provide instructions if you attempt to run it without the proper JDK.
+
+# Notice
+When running this from Linux with the included Java environment, you must `chmod u+x launch.sh && chmod u+x java-runtime-linux/bin/java`
+
+When running this from macOS with the included Java environment, you must `chmod u+x launch.sh && chmod u+x java-runtime-macos/bin/java`
+
+Windows does not support 32-bit (x86) due to Oracle dropping support for it.
 
 # Notice
 Use this nightly build at your own risk!  The master branch is not always fully tested.  The nightly build may not even launch.  There may be new features added which may cause problems with your PhantomBot environment.  Do not take parts of the nightly build and install into an earlier version of PhantomBot unless told to by a developer.  The PhantomBot core, scripts and web modules are all tightly related.
@@ -27,7 +35,7 @@ Please report any bugs to the Community page URL provided at the end of this sec
 * Any changes that you may have made in your environment.  This would include any changes to the scripts, for example.
 
 PhantomBot Community Nightly Build Bug Reports:       
-https://community.phantombot.tv/c/nightly-builds
+https://community.phantom.bot/c/nightly-builds
 
 # Getting Java, OS and PhantomBot Versions from PhantomBot at Startup
 The Java and OS versions are presented when PhantomBot starts up in the Console, some examples:
