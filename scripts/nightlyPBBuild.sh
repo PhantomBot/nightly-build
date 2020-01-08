@@ -74,8 +74,8 @@ git add ${BUILD} ${LIN_BUILD} ${WIN_BUILD} ${MAC_BUILD} ${ARM_BUILD} historical/
 cd ${BUILDS}/historical
 find . -mtime +20 -exec git rm {} \; 2>/dev/null 1>&2
 git commit -m "${BUILD_STR}" 2>/dev/null 1>&2
-if [[ "${INPUT_DRY_RUN}" = "false" ]]; then
-    git push "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" 2>/dev/null 1>&2
+if [[ "${DRY_RUN}" = "false" ]]; then
+    git push "https://${GITHUB_ACTOR}:${TOKEN_GITHUB}@github.com/${GITHUB_REPOSITORY}.git" 2>/dev/null 1>&2
 else
     echo "$(ls)"
     echo.
