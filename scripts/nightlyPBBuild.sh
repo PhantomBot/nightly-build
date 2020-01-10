@@ -35,6 +35,8 @@ BUILD_DATED="PhantomBot-nightly-${FULLSTAMP}.zip"
 LANG="en_US.UTF-8"
 
 cd ${BUILDS}
+git lfs install
+git lfs track "*.zip"
 git checkout --progress master
 LAST_REPO_VERSION=$(cat last_repo_version)
 
