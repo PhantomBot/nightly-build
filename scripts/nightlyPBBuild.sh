@@ -26,7 +26,7 @@ HISTORICAL="${BUILDS}/historical/"
 DATE=$(date +%m%d%Y)
 FULLSTAMP=$(date +%m%d%Y.%H%M%S)
 COMMITSTR="Nightly Build at $(date '+%b %d %H:%M:%S %Y (%Z%z)')"
-BUILD="PhantomBot-nightly.zip"
+# BUILD="PhantomBot-nightly.zip"
 LIN_BUILD="PhantomBot-nightly-lin.zip"
 WIN_BUILD="PhantomBot-nightly-win.zip"
 MAC_BUILD="PhantomBot-nightly-mac.zip"
@@ -52,8 +52,8 @@ REPO_VERSION=$(git rev-parse --short HEAD)
 PBFOLDER=PhantomBot-${PB_VERSION}-NB-$(date +%Y%m%d)
 
 cd ${MASTER}/dist/
-echo "Full zip"
-zip -9 -r ${MASTER}/dist/${BUILD} ${PBFOLDER}
+# echo "Full zip"
+# zip -9 -r ${MASTER}/dist/${BUILD} ${PBFOLDER}
 echo "Lin zip"
 zip -9 -r ${MASTER}/dist/${LIN_BUILD} ${PBFOLDER} -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
 echo "Win zip"
@@ -64,8 +64,9 @@ echo "Arm zip"
 zip -9 -r ${MASTER}/dist/${ARM_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
 
 echo "Move zips"
-cp -f ${MASTER}/dist/${BUILD} ${HISTORICAL}/${BUILD_DATED}
-mv -f ${MASTER}/dist/${BUILD} ${BUILDS}/${BUILD}
+# cp -f ${MASTER}/dist/${BUILD} ${HISTORICAL}/${BUILD_DATED}
+cp -f ${MASTER}/dist/${ARM_BUILD} ${HISTORICAL}/${BUILD_DATED}
+# mv -f ${MASTER}/dist/${BUILD} ${BUILDS}/${BUILD}
 mv -f ${MASTER}/dist/${LIN_BUILD} ${BUILDS}/${LIN_BUILD}
 mv -f ${MASTER}/dist/${WIN_BUILD} ${BUILDS}/${WIN_BUILD}
 mv -f ${MASTER}/dist/${MAC_BUILD} ${BUILDS}/${MAC_BUILD}
@@ -83,7 +84,7 @@ rm -f builds.new
 echo ${REPO_VERSION} > last_repo_version
 git config user.email "PhantomBot-Nightly-build@github-actions.local"
 git config user.name "GitHub-Actions/PhantomBot/nightly-build"
-git add ${BUILD} ${LIN_BUILD} ${WIN_BUILD} ${MAC_BUILD} ${ARM_BUILD} historical/${BUILD_DATED} builds.md last_repo_version
+git add ${LIN_BUILD} ${WIN_BUILD} ${MAC_BUILD} ${ARM_BUILD} historical/${BUILD_DATED} builds.md last_repo_version
 cd ${BUILDS}/historical
 find . -mtime +20 -exec git rm {} \;
 git commit -m "${BUILD_STR}"
