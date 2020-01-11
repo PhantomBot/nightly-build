@@ -35,8 +35,6 @@ BUILD_DATED="PhantomBot-nightly-${FULLSTAMP}.zip"
 LANG="en_US.UTF-8"
 
 cd ${BUILDS}
-git lfs install
-git lfs track "*.zip"
 git checkout --progress master
 LAST_REPO_VERSION=$(cat last_repo_version)
 
@@ -45,27 +43,26 @@ cd ${HOME}
 git clone --progress --depth=1 https://github.com/PhantomBot/PhantomBot.git
 cd PhantomBot
 PB_VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>) { ($ver) = $_ =~ m/\s+<property name=\"version\" value=\"(.*)\" \/>/; } print $ver;')
-ant -noinput -buildfile build.xml distclean clean
-ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-$(date +%Y%m%d) dist
+ant -noinput -buildfile build.xml distclean
+ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-$(date +%Y%m%d) jar
 if [[ $? -ne 0 ]]; then
     exit 1
 fi
 REPO_VERSION=$(git rev-parse --short HEAD)
-cp -f ${MASTER}/dist/PhantomBot*zip ${BUILDS}/${BUILD}
-cp -f ${MASTER}/dist/PhantomBot*zip ${HISTORICAL}/${BUILD_DATED}
-
 PBFOLDER=PhantomBot-${PB_VERSION}-NB-$(date +%Y%m%d)
 
 cd ${MASTER}/dist/
-
+echo "Full zip"
+zip -9 -r ${BUILDS}/${BUILD} ${PBFOLDER}
+cp -f ${BUILDS}/${BUILD} ${HISTORICAL}/${BUILD_DATED}
 echo "Lin zip"
-zip -r ${BUILDS}/${LIN_BUILD} ${PBFOLDER} -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
+zip -9 -r ${BUILDS}/${LIN_BUILD} ${PBFOLDER} -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
 echo "Win zip"
-zip -r ${BUILDS}/${WIN_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime-macos/*' -x '*launch.sh' -x '*launch-service.sh'
+zip -9 -r ${BUILDS}/${WIN_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime-macos/*' -x '*launch.sh' -x '*launch-service.sh'
 echo "Mac zip"
-zip -r ${BUILDS}/${MAC_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*launch.bat'
+zip -9 -r ${BUILDS}/${MAC_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*launch.bat'
 echo "Arm zip"
-zip -r ${BUILDS}/${ARM_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
+zip -9 -r ${BUILDS}/${ARM_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
 
 cd ${BUILDS}
 if [[ "${LAST_REPO_VERSION}" = "${REPO_VERSION}" ]]; then
