@@ -3,8 +3,7 @@
 # nightly-build
 This repository contains a nightly build of PhantomBot from the latest master branch.  The nightly-build release is built on the latest available Ubuntu environment for GitHub Actions. You can find information about the environment [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/virtual-environments-for-github-hosted-runners#supported-runners-and-hardware-resources).
     
-Five build files are present.
-* _PhantomBot-nightly.zip_ - Contains the entire bot, with all of the Java environments from the individual builds below.
+Four build files are present.
 * _PhantomBot-nightly-lin.zip_ - Contains the entire bot, but only the Java environment for Linux 64-bit (x86_64).
 * _PhantomBot-nightly-win.zip_ - Contains the entire bot, but only the Java environment for Windows 64-bit (x86_64).
 * _PhantomBot-nightly-mac.zip_ - Contains the entire bot, but only the Java environment for macOS 64-bit (x86_64).
@@ -16,6 +15,8 @@ When running this from Linux with the included Java environment, you must `chmod
 When running this from macOS with the included Java environment, you must `chmod u+x launch.sh && chmod u+x java-runtime-macos/bin/java`
 
 Windows does not support 32-bit (x86) due to Oracle dropping support for it.
+
+The historical build is a copy of the _PhantomBot-nightly-arm.zip_ package. If you are using 64-bit (x86_64) Windows, Linux, or macOS, you may need to download the latest copy for your platform and then copy the appropriate _launch_ scripts and _java-runtime_ folders into the historical package.
 
 # Notice
 Use this nightly build at your own risk!  The master branch is not always fully tested.  The nightly build may not even launch.  There may be new features added which may cause problems with your PhantomBot environment.  Do not take parts of the nightly build and install into an earlier version of PhantomBot unless told to by a developer.  The PhantomBot core, scripts and web modules are all tightly related.
