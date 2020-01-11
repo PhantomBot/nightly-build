@@ -53,16 +53,23 @@ PBFOLDER=PhantomBot-${PB_VERSION}-NB-$(date +%Y%m%d)
 
 cd ${MASTER}/dist/
 echo "Full zip"
-zip -9 -r ${BUILDS}/${BUILD} ${PBFOLDER}
-cp -f ${BUILDS}/${BUILD} ${HISTORICAL}/${BUILD_DATED}
+zip -9 -r ${MASTER}/dist/${BUILD} ${PBFOLDER}
 echo "Lin zip"
-zip -9 -r ${BUILDS}/${LIN_BUILD} ${PBFOLDER} -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
+zip -9 -r ${MASTER}/dist/${LIN_BUILD} ${PBFOLDER} -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
 echo "Win zip"
-zip -9 -r ${BUILDS}/${WIN_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime-macos/*' -x '*launch.sh' -x '*launch-service.sh'
+zip -9 -r ${MASTER}/dist/${WIN_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime-macos/*' -x '*launch.sh' -x '*launch-service.sh'
 echo "Mac zip"
-zip -9 -r ${BUILDS}/${MAC_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*launch.bat'
+zip -9 -r ${MASTER}/dist/${MAC_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*launch.bat'
 echo "Arm zip"
-zip -9 -r ${BUILDS}/${ARM_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
+zip -9 -r ${MASTER}/dist/${ARM_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
+
+echo "Move zips"
+cp -f ${MASTER}/dist/${BUILD} ${HISTORICAL}/${BUILD_DATED}
+mv -f ${MASTER}/dist/${BUILD} ${BUILDS}/${BUILD}
+mv -f ${MASTER}/dist/${LIN_BUILD} ${BUILDS}/${LIN_BUILD}
+mv -f ${MASTER}/dist/${WIN_BUILD} ${BUILDS}/${WIN_BUILD}
+mv -f ${MASTER}/dist/${MAC_BUILD} ${BUILDS}/${MAC_BUILD}
+mv -f ${MASTER}/dist/${ARM_BUILD} ${BUILDS}/${ARM_BUILD}
 
 cd ${BUILDS}
 if [[ "${LAST_REPO_VERSION}" = "${REPO_VERSION}" ]]; then
