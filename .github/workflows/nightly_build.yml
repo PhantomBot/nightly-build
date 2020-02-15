@@ -14,7 +14,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
     - name: Checkout PhantomBot Repository
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
       with:
         repository: PhantomBot/PhantomBot
         ref: master 
@@ -53,7 +53,7 @@ jobs:
     if: github.repository != 'PhantomBot/nightly-build'
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
       with:
         fetch-depth: 1 
     - name: Set up JDK 11.0.4
@@ -76,7 +76,7 @@ jobs:
     if: github.repository == 'PhantomBot/nightly-build'
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
       with:
         fetch-depth: 1 
     - name: Set up JDK 11.0.4
@@ -99,7 +99,7 @@ jobs:
     needs: buildtest
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
       with:
         fetch-depth: 1 
     - name: Set up JDK 11.0.4
@@ -117,12 +117,16 @@ jobs:
       run: |
         if [ "${DOCKER_USER}" == "" ]; then
           echo "::set-output name=missing_secrets::true"
+          echo "Missing User"
         elif [ "${DOCKER_CLITOKEN}" == "" ]; then
           echo "::set-output name=missing_secrets::true"
+          echo "Missing Cli Token"
         elif [ "${DOCKER_REPO}" == "" ]; then
           echo "::set-output name=missing_secrets::true"
+          echo "Missing Repo"
         else
           echo "::set-output name=missing_secrets::false"
+          echo "All secrets present"
         fi
     - name: Login to DockerHub Registry
       if: steps.check-credentials.output.missing_secrets == 'false'
