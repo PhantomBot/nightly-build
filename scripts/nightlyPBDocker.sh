@@ -40,7 +40,7 @@ if [[ "${HTTPCODE}" = "200" ]]; then
     echo Build already published
     exit 0
 else
-    echo Build not published (${HTTPCODE})
+    echo Build not published ${HTTPCODE}
 fi
 
 mkdir -p ${DOCKER_BUILD}
