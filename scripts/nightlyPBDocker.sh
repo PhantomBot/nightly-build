@@ -47,9 +47,14 @@ cd ${DOCKER_BUILD}
 rm -rf resources/java-runtime
 rm -rf resources/java-runtime-macos
 
-sed -i "s/apt-get install -yqq/apt-get install -yqq git/" Dockerfile
+sed -i "s/&& apt-get update -q \\//" Dockerfile
+sed -i "s/&& apt-get install -yqq ant \\/" Dockerfile
+sed -i "s/&& apt-get clean \\//" Dockerfile
 sed -i "s/ant jar/ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE} jar/" Dockerfile
 sed -i "s/\/dist\/build\//\/dist\/${PBFOLDER}\//" Dockerfile
+
+sed -i "<target name=\"git.revision\" if=\"git.present\">/<target name=\"git.revision\">/" build.xml
+sed -i "else=\"unknown\">/else=\"${REPO_VERSION}\">/" build.xml
 
 docker build . --file Dockerfile --tag ${DOCKER_REPO}:${REPO_VERSION}
 docker push ${DOCKER_REPO}:${REPO_VERSION}
