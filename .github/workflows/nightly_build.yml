@@ -118,23 +118,24 @@ jobs:
           echo "All secrets present"
           echo "##[set-output name=missingsecrets;]$(echo no)"
         fi
-    - name: Credentials Result
-      env:
-        MISSING_SECRETS: ${{ steps.check_credentials.output.missingsecrets }}
-      run: echo ${MISSING_SECRETS}
     - name: Checkout Repository
+      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       uses: actions/checkout@v2
       with:
         fetch-depth: 1 
     - name: Set up JDK 11.0.4
+      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       uses: actions/setup-java@v1
       with:
         java-version: 11.0.4
     - name: Set up tools
+      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       run: sudo apt-get install ant perl git zip coreutils
     - name: Login to DockerHub Registry
+      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       run: echo ${{ secrets.DOCKER_CLITOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
     - name: Build and Push Nightly Build
+      if: contains(steps.check_credentials.outputss.missingsecrets, 'no')
       env:
         TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
