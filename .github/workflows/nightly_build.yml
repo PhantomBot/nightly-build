@@ -116,23 +116,23 @@ jobs:
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
       run: |
         if [ "${DOCKER_USER}" == "" ]; then
-          echo "::set-output name=missing_secrets::true"
+          echo "::set-output name=hassecrets::"
           echo "Missing User"
         elif [ "${DOCKER_CLITOKEN}" == "" ]; then
-          echo "::set-output name=missing_secrets::true"
+          echo "::set-output name=hassecrets::"
           echo "Missing Cli Token"
         elif [ "${DOCKER_REPO}" == "" ]; then
-          echo "::set-output name=missing_secrets::true"
+          echo "::set-output name=hassecrets::"
           echo "Missing Repo"
         else
-          echo "::set-output name=missing_secrets::false"
+          echo "::set-output name=hassecrets::true"
           echo "All secrets present"
         fi
     - name: Login to DockerHub Registry
-      if: steps.check-credentials.output.missing_secrets == 'false'
+      if: steps.check-credentials.output.hassecrets
       run: echo ${{ secrets.DOCKER_CLITOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
     - name: Build and Push Nightly Build
-      if: steps.check-credentials.output.missing_secrets == 'false'
+      if: steps.check-credentials.output.hassecrets
       env:
         TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
