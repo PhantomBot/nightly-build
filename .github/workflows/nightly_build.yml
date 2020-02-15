@@ -94,7 +94,7 @@ jobs:
         chmod 0744 ./nightlyPBBuild.sh
         ./nightlyPBBuild.sh
   docker:
-    name: Build Docker on ubuntu-latest with JDK 11.0.4
+    name: Docker build on ubuntu-latest with JDK 11.0.4
     runs-on: ubuntu-latest
     needs: buildtest
     steps:
@@ -125,10 +125,10 @@ jobs:
           echo "::set-output name=missing_secrets::false"
         fi
     - name: Login to DockerHub Registry
-      if: steps.check-credentials.output.missing_secrets == "false"
+      if: steps.check-credentials.output.missing_secrets == 'false'
       run: echo ${{ secrets.DOCKER_CLITOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
     - name: Build and Push Nightly Build
-      if: steps.check-credentials.output.missing_secrets == "false"
+      if: steps.check-credentials.output.missing_secrets == 'false'
       env:
         TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
