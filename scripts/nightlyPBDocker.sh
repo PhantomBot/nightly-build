@@ -44,6 +44,10 @@ mkdir -p ${DOCKER_BUILD}
 cp -rf ${MASTER}/* ${DOCKER_BUILD}
 cd ${DOCKER_BUILD}
 
+rm -rf resources/java-runtime
+rm -rf resources/java-runtime-macos
+
+sed -i "s/apt-get install -yqq/apt-get install -yqq git/" Dockerfile
 sed -i "s/ant jar/ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE} jar/" Dockerfile
 sed -i "s/\/dist\/build\//\/dist\/${PBFOLDER}\//" Dockerfile
 
