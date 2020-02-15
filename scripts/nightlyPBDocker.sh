@@ -37,7 +37,10 @@ PBFOLDER=PhantomBot-${PB_VERSION}-NB-${DATE}
 HTTPCODE=$(curl -s -I 'https://registry.hub.docker.com/v2/repositories/${DOCKER_REPO}/tags/${REPO_VERSION}/' | head -n 1 | cut  -d$' ' -f2)
 
 if [[ "${HTTPCODE}" = "200" ]]; then
+    echo Build already published
     exit 0
+else
+    echo Build not published (${HTTPCODE})
 fi
 
 mkdir -p ${DOCKER_BUILD}
