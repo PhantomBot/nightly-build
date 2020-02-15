@@ -135,7 +135,7 @@ jobs:
       if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       run: echo ${{ secrets.DOCKER_CLITOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
     - name: Build and Push Nightly Build
-      if: contains(steps.check_credentials.outputss.missingsecrets, 'no')
+      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       env:
         TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
