@@ -47,9 +47,6 @@ cd ${DOCKER_BUILD}
 rm -rf resources/java-runtime
 rm -rf resources/java-runtime-macos
 
-sed -i "/&& apt-get update -q \\\\/d" Dockerfile
-sed -i "/&& apt-get install -yqq ant \\\\/d" Dockerfile
-sed -i "/&& apt-get clean \\\\/d" Dockerfile
 sed -i "s/ant jar/ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE} jar/" Dockerfile
 sed -i "s/\/dist\/build\//\/dist\/${PBFOLDER}\//" Dockerfile
 
