@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Feb 19 12:12:01 2020 (UTC+0000) (Repo: 5f18e53) (No Changes)
 ###### Nightly Build at Feb 18 12:12:08 2020 (UTC+0000) (Repo: 5f18e53) (No Changes)
 ###### Nightly Build at Feb 17 12:12:08 2020 (UTC+0000) (Repo: 5f18e53) (No Changes)
 ###### Nightly Build at Feb 16 12:13:02 2020 (UTC+0000) (Repo: 5f18e53) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/a7c385e...5f18e53))
@@ -22,4 +23,3 @@
 ###### Nightly Build at Feb 01 12:12:04 2020 (UTC+0000) (Repo: 43c5fa3) (No Changes)
 ###### Nightly Build at Jan 31 12:08:54 2020 (UTC+0000) (Repo: 43c5fa3) (No Changes)
 ###### Nightly Build at Jan 30 12:09:29 2020 (UTC+0000) (Repo: 43c5fa3) (No Changes)
-###### Nightly Build at Jan 29 12:08:59 2020 (UTC+0000) (Repo: 43c5fa3) (No Changes)
