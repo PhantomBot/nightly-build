@@ -33,16 +33,6 @@ ant -noinput -buildfile build.xml distclean
 
 REPO_VERSION=$(git rev-parse --short HEAD)
 PBFOLDER=PhantomBot-${PB_VERSION}-NB-${DATE}
-PBDEFFOLDER=PhantomBot-${PB_VERSION}
-
-HTTPCODE=$(curl -s -I 'https://registry.hub.docker.com/v2/repositories/${DOCKER_REPO}/tags/${REPO_VERSION}/' | head -n 1 | cut  -d$' ' -f2)
-
-if [[ "${HTTPCODE}" = "200" ]]; then
-    echo Build already published
-    exit 0
-else
-    echo Build not published ${HTTPCODE}
-fi
 
 mkdir -p ${DOCKER_BUILD}
 cp -rf ${MASTER}/* ${DOCKER_BUILD}
@@ -52,7 +42,7 @@ rm -rf resources/java-runtime
 rm -rf resources/java-runtime-macos
 
 sed -i "s/ant jar/ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE} jar/" Dockerfile
-sed -i "s/\/dist\/${PBDEFFOLDER}\//\/dist\/${PBFOLDER}\//" Dockerfile
+sed -i "s/\/dist\/\${PROJECT_NAME}-${PB_VERSION}\//\/dist\/${PBFOLDER}\//" Dockerfile
 
 sed -i "s/<target name=\"git.revision\" if=\"git.present\">/<target name=\"git.revision\">/" build.xml
 sed -i "s/else=\"unknown\">/else=\"${REPO_VERSION}\">/" build.xml
