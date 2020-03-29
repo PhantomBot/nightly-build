@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Mar 29 12:12:51 2020 (UTC+0000) (Repo: 2b50fe0) (No Changes)
 ###### Nightly Build at Mar 28 12:13:14 2020 (UTC+0000) (Repo: 2b50fe0) (No Changes)
 ###### Nightly Build at Mar 27 12:14:10 2020 (UTC+0000) (Repo: 2b50fe0) (No Changes)
 ###### Nightly Build at Mar 26 12:12:55 2020 (UTC+0000) (Repo: 2b50fe0) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Mar 11 12:12:44 2020 (UTC+0000) (Repo: 7df73cf) (No Changes)
 ###### Nightly Build at Mar 10 12:13:06 2020 (UTC+0000) (Repo: 7df73cf) (No Changes)
 ###### Nightly Build at Mar 09 12:12:54 2020 (UTC+0000) (Repo: 7df73cf) (No Changes)
-###### Nightly Build at Mar 08 12:11:25 2020 (UTC+0000) (Repo: 7df73cf) (No Changes)
