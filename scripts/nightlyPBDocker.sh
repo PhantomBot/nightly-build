@@ -53,7 +53,7 @@ rm -rf resources/java-runtime
 rm -rf resources/java-runtime-macos
 
 sed -i "s/ant jar/ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE} jar/" Dockerfile
-sed -i "s/\/dist\/\${PROJECT_NAME}-${PB_VERSION}\//\/dist\/${PBFOLDER}\//" Dockerfile
+sed -r -i "s/\/dist\/\\\$\{PROJECT_NAME\}-([0-9.]+)\//\/dist\/${PBFOLDER}\//" Dockerfile
 
 sed -i "s/<target name=\"git.revision\" if=\"git.present\">/<target name=\"git.revision\">/" build.xml
 sed -i "s/else=\"unknown\">/else=\"${REPO_VERSION}\">/" build.xml
