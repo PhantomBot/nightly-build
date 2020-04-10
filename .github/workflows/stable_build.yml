@@ -87,7 +87,7 @@ jobs:
     - name: Login to DockerHub Registry
       if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       run: echo ${{ secrets.DOCKER_CLITOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
-    - name: Build and Push Nightly Build
+    - name: Build and Push Stable Build
       if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       env:
         TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
