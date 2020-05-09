@@ -84,6 +84,12 @@ jobs:
     - name: Set up tools
       if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       run: sudo apt-get install ant perl git zip coreutils
+    - name: Set up Docker Buildx
+      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
+      uses: crazy-max/ghaction-docker-buildx@v1
+      with:
+        buildx-version: latest
+        qemu-version: latest
     - name: Login to DockerHub Registry
       if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
       run: echo ${{ secrets.DOCKER_CLITOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
