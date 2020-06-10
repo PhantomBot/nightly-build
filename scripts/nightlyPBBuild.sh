@@ -86,7 +86,7 @@ git config user.email "PhantomBot-Nightly-build@github-actions.local"
 git config user.name "GitHub-Actions/PhantomBot/nightly-build"
 git add ${LIN_BUILD} ${WIN_BUILD} ${MAC_BUILD} ${ARM_BUILD} historical/${BUILD_DATED} builds.md last_repo_version
 cd ${BUILDS}/historical
-find . -mtime +20 -exec git rm {} \;
+find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000){ printf("timestamp: %d diff: %d\n%s\n",t, d, s); system("git rm "$1)}}' 2>/dev/null
 git commit -m "${BUILD_STR}"
 if [[ "${DRY_RUN}" = "false" ]]; then
     git push "https://${GITHUB_ACTOR}:${TOKEN_GITHUB}@github.com/${GITHUB_REPOSITORY}.git"
