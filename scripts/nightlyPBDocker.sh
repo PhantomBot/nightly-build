@@ -58,5 +58,5 @@ sed -r -i "s/\/dist\/\\\$\{PROJECT_NAME\}-([0-9.]+)\//\/dist\/${PBFOLDER}\//" Do
 sed -i "s/<target name=\"git.revision\" if=\"git.present\">/<target name=\"git.revision\">/" build.xml
 sed -i "s/else=\"unknown\">/else=\"${REPO_VERSION}\">/" build.xml
 
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:${REPO_VERSION} --push .
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:latest --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:${REPO_VERSION} --build-arg PROJECT_VERSION=${PB_VERSION} --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:latest --build-arg PROJECT_VERSION=${PB_VERSION} --push .
