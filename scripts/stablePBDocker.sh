@@ -34,7 +34,6 @@ PB_VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>
 ant -noinput -buildfile build.xml distclean
 
 REPO_VERSION=$(git rev-parse --short HEAD)
-PBFOLDER=PhantomBot-${PB_VERSION}
 
 URI="https://registry.hub.docker.com/v2/repositories/${DOCKER_REPO_STABLE}/tags/${PB_VERSION}/"
 
@@ -54,11 +53,8 @@ cd ${DOCKER_BUILD}
 rm -rf resources/java-runtime
 rm -rf resources/java-runtime-macos
 
-sed -i "s/ant jar/ant -noinput -buildfile build.xml jar/" Dockerfile
-sed -r -i "s/\/dist\/\\\$\{PROJECT_NAME\}-([0-9.]+)\//\/dist\/${PBFOLDER}\//" Dockerfile
-
 sed -i "s/<target name=\"git.revision\" if=\"git.present\">/<target name=\"git.revision\">/" build.xml
 sed -i "s/else=\"unknown\">/else=\"${REPO_VERSION}\">/" build.xml
 
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO_STABLE}:${PB_VERSION} --push .
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO_STABLE}:latest --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO_STABLE}:${PB_VERSION} --build-arg PROJECT_VERSION=${PB_VERSION} --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO_STABLE}:latest --build-arg PROJECT_VERSION=${PB_VERSION} --push .
