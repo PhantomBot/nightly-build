@@ -55,5 +55,5 @@ rm -rf resources/java-runtime-macos
 sed -i "s/<target name=\"git.revision\" if=\"git.present\">/<target name=\"git.revision\">/" build.xml
 sed -i "s/else=\"unknown\">/else=\"${REPO_VERSION}\">/" build.xml
 
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:${REPO_VERSION} --build-arg PROJECT_VERSION=${PB_VERSION} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE}" --push .
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:latest --build-arg PROJECT_VERSION=${PB_VERSION} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE}" --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:${REPO_VERSION} --build-arg PROJECT_VERSION=${PB_VERSION}-NB-${DATE} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE}" --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:latest --build-arg PROJECT_VERSION=${PB_VERSION}-NB-${DATE} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE}" --push .
