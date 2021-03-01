@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Mar 01 12:20:10 2021 (UTC+0000) (Repo: bf69ab8) (No Changes)
 ###### Nightly Build at Feb 28 12:19:46 2021 (UTC+0000) (Repo: bf69ab8) (No Changes)
 ###### Nightly Build at Feb 27 12:19:30 2021 (UTC+0000) (Repo: bf69ab8) (No Changes)
 ###### Nightly Build at Feb 26 12:20:01 2021 (UTC+0000) (Repo: bf69ab8) (No Changes)
@@ -22,4 +23,3 @@
 ###### Nightly Build at Feb 11 12:20:09 2021 (UTC+0000) (Repo: 6d1a942) (No Changes)
 ###### Nightly Build at Feb 10 12:19:55 2021 (UTC+0000) (Repo: 6d1a942) (No Changes)
 ###### Nightly Build at Feb 09 12:19:58 2021 (UTC+0000) (Repo: 6d1a942) (No Changes)
-###### Nightly Build at Feb 08 12:19:47 2021 (UTC+0000) (Repo: 6d1a942) (No Changes)
