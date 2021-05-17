@@ -1,0 +1,39 @@
+name: Upstream Sync
+
+on:
+  schedule:
+    - cron: 0 12 * * *
+  repository_dispatch:
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    name: Sync Repo with PhantomBot/nightly-build
+    runs-on: ubuntu-latest
+    if: github.repository != 'PhantomBot/nightly-build'
+    steps:
+    - name: Check Enabled
+      id: check_enabled
+      env:
+        UPSTREAM_SYNC: ${{ secrets.UPSTREAM_SYNC }}
+      run: |
+        if [ "${UPSTREAM_SYNC}" == "true" ]; then
+          echo "Sync is enabled"
+          echo "##[set-output name=enabled;]$(echo yes)"
+        else
+          echo "Sync is disabled"
+          echo "##[set-output name=enabled;]$(echo no)"
+        fi
+    - name: Checkout Local Repository
+      if: contains(steps.check_enabled.outputs.enabled, 'yes')
+      uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+    - name: Sync with Upstream
+      if: contains(steps.check_enabled.outputs.enabled, 'yes')
+      uses: repo-sync/github-sync@v2
+      with:
+        source_repo: "PhantomBot/nightly-build"
+        source_branch: "master"
+        destination_branch: "master"
+        github_token: ${{ secrets.GITHUB_TOKEN }}
