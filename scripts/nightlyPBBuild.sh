@@ -42,6 +42,19 @@ cd ${HOME}
 
 git clone --progress --depth=1 https://github.com/PhantomBot/PhantomBot.git
 cd PhantomBot
+REPO_VERSION=$(git rev-parse --short HEAD)
+
+if [[ "${LAST_REPO_VERSION}" = "${REPO_VERSION}" ]]; then
+    ISOLD=find ${BUILDS}/historical -type f -printf "%T@ %p\n" | sort -n | cut -d' ' -f 2- | tail -n 1 | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000){ print("true"); } else { print("false"); }}' 2>/dev/null
+
+    if [[ "${ISOLD}" = "true" ]]; then
+        echo "Nightly build is old, building anyway..."
+    else
+        echo "No changes, aborting..."
+        exit 0
+    fi
+fi
+
 PB_VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>) { ($ver) = $_ =~ m/\s+<property name=\"version\" value=\"(.*)\" \/>/; } print $ver;')
 ant -noinput -buildfile build.xml distclean
 sed -i -r "s/revision=\"[A-Za-z0-9._-]+\"/revision=\"${REPO_VERSION}\"/;s/branch=\"[A-Za-z0-9._-]+\"/branch=\"${PB_VERSION}-NB-${DATE}\"/" ivy.xml
@@ -49,7 +62,7 @@ ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSI
 if [[ $? -ne 0 ]]; then
     exit 1
 fi
-REPO_VERSION=$(git rev-parse --short HEAD)
+
 PBFOLDER=PhantomBot-${PB_VERSION}-NB-${DATE}
 
 cd ${MASTER}/dist/
