@@ -30,7 +30,7 @@ COMMITSTR="Nightly Build at $(date '+%b %d %H:%M:%S %Y (%Z%z)')"
 LIN_BUILD="PhantomBot-nightly-lin.zip"
 WIN_BUILD="PhantomBot-nightly-win.zip"
 MAC_BUILD="PhantomBot-nightly-mac.zip"
-ARM_BUILD="PhantomBot-nightly-arm.zip"
+ARMBSDOTHER_BUILD="PhantomBot-nightly-arm-bsd-other.zip"
 BUILD_DATED="PhantomBot-nightly-${FULLSTAMP}.zip"
 LANG="en_US.UTF-8"
 
@@ -69,22 +69,22 @@ cd ${MASTER}/dist/
 # echo "Full zip"
 # zip -9 -r ${MASTER}/dist/${BUILD} ${PBFOLDER}
 echo "Lin zip"
-zip -9 -r ${MASTER}/dist/${LIN_BUILD} ${PBFOLDER} -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
+zip -9 -r ${MASTER}/dist/${LIN_BUILD} ${PBFOLDER} -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat' -x '*launch-bsd.sh' -x '*launch-bsd-service.sh'
 echo "Win zip"
-zip -9 -r ${MASTER}/dist/${WIN_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime-macos/*' -x '*launch.sh' -x '*launch-service.sh'
+zip -9 -r ${MASTER}/dist/${WIN_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime-macos/*' -x '*launch.sh' -x '*launch-service.sh' -x '*launch-bsd.sh' -x '*launch-bsd-service.sh'
 echo "Mac zip"
-zip -9 -r ${MASTER}/dist/${MAC_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*launch.bat'
+zip -9 -r ${MASTER}/dist/${MAC_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*launch.bat' -x '*launch-bsd.sh' -x '*launch-bsd-service.sh'
 echo "Arm zip"
-zip -9 -r ${MASTER}/dist/${ARM_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
+zip -9 -r ${MASTER}/dist/${ARMBSDOTHER_BUILD} ${PBFOLDER} -x '*java-runtime-linux/*' -x '*java-runtime/*' -x '*java-runtime-macos/*' -x '*launch.bat'
 
 echo "Move zips"
 # cp -f ${MASTER}/dist/${BUILD} ${HISTORICAL}/${BUILD_DATED}
-cp -f ${MASTER}/dist/${ARM_BUILD} ${HISTORICAL}/${BUILD_DATED}
+cp -f ${MASTER}/dist/${ARMBSDOTHER_BUILD} ${HISTORICAL}/${BUILD_DATED}
 # mv -f ${MASTER}/dist/${BUILD} ${BUILDS}/${BUILD}
 mv -f ${MASTER}/dist/${LIN_BUILD} ${BUILDS}/${LIN_BUILD}
 mv -f ${MASTER}/dist/${WIN_BUILD} ${BUILDS}/${WIN_BUILD}
 mv -f ${MASTER}/dist/${MAC_BUILD} ${BUILDS}/${MAC_BUILD}
-mv -f ${MASTER}/dist/${ARM_BUILD} ${BUILDS}/${ARM_BUILD}
+mv -f ${MASTER}/dist/${ARMBSDOTHER_BUILD} ${BUILDS}/${ARMBSDOTHER_BUILD}
 
 cd ${BUILDS}
 if [[ "${LAST_REPO_VERSION}" = "${REPO_VERSION}" ]]; then
@@ -98,7 +98,7 @@ rm -f builds.new
 echo ${REPO_VERSION} > last_repo_version
 git config user.email "PhantomBot-Nightly-build@github-actions.local"
 git config user.name "GitHub-Actions/PhantomBot/nightly-build"
-git add ${LIN_BUILD} ${WIN_BUILD} ${MAC_BUILD} ${ARM_BUILD} historical/${BUILD_DATED} builds.md last_repo_version
+git add ${LIN_BUILD} ${WIN_BUILD} ${MAC_BUILD} ${ARMBSDOTHER_BUILD} historical/${BUILD_DATED} builds.md last_repo_version
 cd ${BUILDS}/historical
 find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000){ printf("timestamp: %d diff: %d\n%s\n",t, d, s); system("git rm "$1)}}' 2>/dev/null
 git commit -m "${BUILD_STR}"
