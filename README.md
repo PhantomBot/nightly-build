@@ -14,6 +14,8 @@ When running this from Linux with the included Java environment, you must `chmod
 
 When running this from macOS with the included Java environment, you must `chmod u+x launch.sh && chmod u+x java-runtime-macos/bin/java`
 
+When running this from BSD, you must `chmod u+x launch-bsd.sh`
+
 Windows does not support 32-bit (x86) due to Oracle dropping support for it.
 
 The historical build is a copy of the _PhantomBot-nightly-arm-bsd-other.zip_ package. If you are using 64-bit (x86_64) Windows, Linux, or macOS, you may need to download the latest copy for your platform and then copy the appropriate _launch_ scripts and _java-runtime_ folders into the historical package.
