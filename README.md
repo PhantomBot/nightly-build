@@ -7,7 +7,7 @@ Four build files are present.
 * _PhantomBot-nightly-lin.zip_ - Contains the entire bot, but only the Java environment for Linux 64-bit (x86_64).
 * _PhantomBot-nightly-win.zip_ - Contains the entire bot, but only the Java environment for Windows 64-bit (x86_64).
 * _PhantomBot-nightly-mac.zip_ - Contains the entire bot, but only the Java environment for macOS 64-bit (x86_64).
-* _PhantomBot-nightly-arm.zip_ - Contains the entire bot, but no Java environment. Use this for Raspberry Pi or Linux 32-bit (x86) with OpenJDK 11. The launch.sh script will provide instructions if you attempt to run it without the proper JDK.
+* _PhantomBot-nightly-arm-bsd-other.zip_ - Contains the entire bot, but no Java environment. Use this for Raspberry Pi, Linux 32-bit (x86) with OpenJDK 11, or BSD. The launch.sh script will provide instructions if you attempt to run it without the proper JDK.
 
 # Notice
 When running this from Linux with the included Java environment, you must `chmod u+x launch.sh && chmod u+x java-runtime-linux/bin/java`
@@ -16,7 +16,7 @@ When running this from macOS with the included Java environment, you must `chmod
 
 Windows does not support 32-bit (x86) due to Oracle dropping support for it.
 
-The historical build is a copy of the _PhantomBot-nightly-arm.zip_ package. If you are using 64-bit (x86_64) Windows, Linux, or macOS, you may need to download the latest copy for your platform and then copy the appropriate _launch_ scripts and _java-runtime_ folders into the historical package.
+The historical build is a copy of the _PhantomBot-nightly-arm-bsd-other.zip_ package. If you are using 64-bit (x86_64) Windows, Linux, or macOS, you may need to download the latest copy for your platform and then copy the appropriate _launch_ scripts and _java-runtime_ folders into the historical package.
 
 # Notice
 Use this nightly build at your own risk!  The master branch is not always fully tested.  The nightly build may not even launch.  There may be new features added which may cause problems with your PhantomBot environment.  Do not take parts of the nightly build and install into an earlier version of PhantomBot unless told to by a developer.  The PhantomBot core, scripts and web modules are all tightly related.
