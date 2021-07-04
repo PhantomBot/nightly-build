@@ -127,6 +127,8 @@ jobs:
       env:
         TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+        ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
+        ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
       run: |
         cd ${GITHUB_WORKSPACE}/scripts
         chmod 0744 ./nightlyPBDocker.sh
