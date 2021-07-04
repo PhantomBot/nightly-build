@@ -53,6 +53,17 @@ if [[ "${LAST_REPO_VERSION}" = "${REPO_VERSION}" ]]; then
         echo "No changes, aborting..."
         exit 0
     fi
+else
+    ISOLD="false"
+    if [[ "${DRY_RUN}" = "false" ]]; then
+        RESPONSE=$(curl -X POST https://api.rollbar.com/api/1/deploy/ \
+                -H "X-ROLLBAR-ACCESS-TOKEN: $ROLLBAR_WRITE_TOKEN" \
+                --form environment=nightly_build \
+                --form revision=$REPO_VERSION \
+                --form status=started \
+                --form local_username=nightly-build)
+        ROLLBAR_DEPLOY_ID=$(echo $RESPONSE | jq -r '.data.deploy_id')
+    fi
 fi
 
 PB_VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>) { ($ver) = $_ =~ m/\s+<property name=\"version\" value=\"(.*)\" \/>/; } print $ver;')
@@ -107,4 +118,15 @@ if [[ "${DRY_RUN}" = "false" ]]; then
 else
     cd ${BUILDS}
     echo "$(ls -lah)"
+fi
+
+if [[ "${ISOLD}" = "false" ]]; then
+    if [[ "${DRY_RUN}" = "false" ]]; then
+        RESPONSE=$(curl -X PATCH https://api.rollbar.com/api/1/deploy/$ROLLBAR_DEPLOY_ID \
+                -H "X-ROLLBAR-ACCESS-TOKEN: $ROLLBAR_WRITE_TOKEN" \
+                --form environment=nightly_build \
+                --form revision=$REPO_VERSION \
+                --form status=succeeded \
+                --form local_username=nightly-build)
+    fi
 fi
