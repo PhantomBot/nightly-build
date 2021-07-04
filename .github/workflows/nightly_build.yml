@@ -40,7 +40,7 @@ jobs:
       with:
         java-version: 11.0.4
     - name: Set up tools
-      run: sudo apt-get install ant perl git zip coreutils
+      run: sudo apt-get install ant perl git zip coreutils jq
     - name: Dry Run Nightly Build
       env:
         DRY_RUN: 'true'
