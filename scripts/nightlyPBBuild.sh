@@ -58,7 +58,7 @@ fi
 PB_VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>) { ($ver) = $_ =~ m/\s+<property name=\"version\" value=\"(.*)\" \/>/; } print $ver;')
 ant -noinput -buildfile build.xml distclean
 sed -i -r "s/revision=\"[A-Za-z0-9._-]+\"/revision=\"${REPO_VERSION}\"/;s/branch=\"[A-Za-z0-9._-]+\"/branch=\"${PB_VERSION}-NB-${DATE}\"/" ivy.xml
-ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE} jar
+ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Drollbar_token=${ROLLBAR_TOKEN} -Drollbar_endpoint=${ROLLBAR_ENDPOINT} -Dversion=${PB_VERSION}-NB-${DATE} jar
 if [[ $? -ne 0 ]]; then
     exit 1
 fi
