@@ -57,5 +57,5 @@ sed -i "s/<target name=\"git.revision\" if=\"git.present\">/<target name=\"git.r
 sed -i "s/else=\"unknown\">/else=\"${REPO_VERSION}\">/" build.xml
 sed -i -r "s/revision=\"[A-Za-z0-9._-]+\"/revision=\"${REPO_VERSION}\"/;s/branch=\"[A-Za-z0-9._-]+\"/branch=\"${PB_RELEASE_TAG}\"/;s/status="[A-Za-z0-9._-]+"/status="release"/" ivy.xml
 
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO_STABLE}:${PB_VERSION} --build-arg PROJECT_VERSION=${PB_VERSION} --build-arg ANT_ARGS="-Dbuildtype=stable" --push .
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO_STABLE}:latest --build-arg PROJECT_VERSION=${PB_VERSION} --build-arg ANT_ARGS="-Dbuildtype=stable" --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO_STABLE}:${PB_VERSION} --build-arg PROJECT_VERSION=${PB_VERSION} --build-arg ANT_ARGS="-Dbuildtype=stable -Drollbar_token=${ROLLBAR_TOKEN} -Drollbar_endpoint=${ROLLBAR_ENDPOINT}" --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO_STABLE}:latest --build-arg PROJECT_VERSION=${PB_VERSION} --build-arg ANT_ARGS="-Dbuildtype=stable -Drollbar_token=${ROLLBAR_TOKEN} -Drollbar_endpoint=${ROLLBAR_ENDPOINT}" --push .

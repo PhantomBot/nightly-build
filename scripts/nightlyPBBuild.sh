@@ -53,12 +53,23 @@ if [[ "${LAST_REPO_VERSION}" = "${REPO_VERSION}" ]]; then
         echo "No changes, aborting..."
         exit 0
     fi
+else
+    ISOLD="false"
+    if [[ "${DRY_RUN}" = "false" ]]; then
+        RESPONSE=$(curl -X POST https://api.rollbar.com/api/1/deploy/ \
+                -H "X-ROLLBAR-ACCESS-TOKEN: $ROLLBAR_WRITE_TOKEN" \
+                --form environment=nightly_build \
+                --form revision=$REPO_VERSION \
+                --form status=started \
+                --form local_username=nightly-build)
+        ROLLBAR_DEPLOY_ID=$(echo $RESPONSE | jq -r '.data.deploy_id')
+    fi
 fi
 
 PB_VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>) { ($ver) = $_ =~ m/\s+<property name=\"version\" value=\"(.*)\" \/>/; } print $ver;')
 ant -noinput -buildfile build.xml distclean
 sed -i -r "s/revision=\"[A-Za-z0-9._-]+\"/revision=\"${REPO_VERSION}\"/;s/branch=\"[A-Za-z0-9._-]+\"/branch=\"${PB_VERSION}-NB-${DATE}\"/" ivy.xml
-ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE} jar
+ant -noinput -buildfile build.xml -Dbuildtype=nightly_build -Drollbar_token=${ROLLBAR_TOKEN} -Drollbar_endpoint=${ROLLBAR_ENDPOINT} -Dversion=${PB_VERSION}-NB-${DATE} jar
 if [[ $? -ne 0 ]]; then
     exit 1
 fi
@@ -107,4 +118,15 @@ if [[ "${DRY_RUN}" = "false" ]]; then
 else
     cd ${BUILDS}
     echo "$(ls -lah)"
+fi
+
+if [[ "${ISOLD}" = "false" ]]; then
+    if [[ "${DRY_RUN}" = "false" ]]; then
+        RESPONSE=$(curl -X PATCH https://api.rollbar.com/api/1/deploy/$ROLLBAR_DEPLOY_ID \
+                -H "X-ROLLBAR-ACCESS-TOKEN: $ROLLBAR_WRITE_TOKEN" \
+                --form environment=nightly_build \
+                --form revision=$REPO_VERSION \
+                --form status=succeeded \
+                --form local_username=nightly-build)
+    fi
 fi

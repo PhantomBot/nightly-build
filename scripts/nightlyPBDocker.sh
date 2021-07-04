@@ -56,5 +56,5 @@ sed -i "s/<target name=\"git.revision\" if=\"git.present\">/<target name=\"git.r
 sed -i "s/else=\"unknown\">/else=\"${REPO_VERSION}\">/" build.xml
 sed -i -r "s/revision=\"[A-Za-z0-9._-]+\"/revision=\"${REPO_VERSION}\"/;s/branch=\"[A-Za-z0-9._-]+\"/branch=\"${PB_VERSION}-NB-${DATE}\"/" ivy.xml
 
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:${REPO_VERSION} --build-arg PROJECT_VERSION=${PB_VERSION}-NB-${DATE} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE}" --push .
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:latest --build-arg PROJECT_VERSION=${PB_VERSION}-NB-${DATE} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Dversion=${PB_VERSION}-NB-${DATE}" --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:${REPO_VERSION} --build-arg PROJECT_VERSION=${PB_VERSION}-NB-${DATE} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Drollbar_token=${ROLLBAR_TOKEN} -Drollbar_endpoint=${ROLLBAR_ENDPOINT} -Dversion=${PB_VERSION}-NB-${DATE}" --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:latest --build-arg PROJECT_VERSION=${PB_VERSION}-NB-${DATE} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Drollbar_token=${ROLLBAR_TOKEN} -Drollbar_endpoint=${ROLLBAR_ENDPOINT} -Dversion=${PB_VERSION}-NB-${DATE}" --push .

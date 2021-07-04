@@ -40,7 +40,7 @@ jobs:
       with:
         java-version: 11.0.4
     - name: Set up tools
-      run: sudo apt-get install ant perl git zip coreutils
+      run: sudo apt-get install ant perl git zip coreutils jq
     - name: Dry Run Nightly Build
       env:
         DRY_RUN: 'true'
@@ -68,6 +68,9 @@ jobs:
       env:
         TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
         DRY_RUN: 'false'
+        ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
+        ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
+        ROLLBAR_WRITE_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
       run: |
         cd ${GITHUB_WORKSPACE}/scripts
         chmod 0744 ./nightlyPBBuild.sh
@@ -124,6 +127,8 @@ jobs:
       env:
         TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+        ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
+        ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
       run: |
         cd ${GITHUB_WORKSPACE}/scripts
         chmod 0744 ./nightlyPBDocker.sh
