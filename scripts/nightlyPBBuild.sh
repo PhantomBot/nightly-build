@@ -63,6 +63,7 @@ else
                 --form status=started \
                 --form local_username=nightly-build)
         ROLLBAR_DEPLOY_ID=$(echo $RESPONSE | jq -r '.data.deploy_id')
+        echo $RESPONSE
     fi
 fi
 
@@ -128,5 +129,6 @@ if [[ "${ISOLD}" = "false" ]]; then
                 --form revision=$REPO_VERSION \
                 --form status=succeeded \
                 --form local_username=nightly-build)
+        echo $RESPONSE
     fi
 fi
