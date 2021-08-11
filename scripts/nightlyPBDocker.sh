@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2016-2020 phantombot.tv
+# Copyright (C) 2016-2021 phantombot.tv
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,6 +43,14 @@ if [[ "${HTTPCODE}" = "200" ]]; then
     exit 0
 else
     echo Build not published ${HTTPCODE}
+    RESPONSE=$(curl -X POST https://api.rollbar.com/api/1/deploy/ \
+            -H "X-ROLLBAR-ACCESS-TOKEN: $ROLLBAR_WRITE_TOKEN" \
+            --form environment=nightly_build_docker \
+            --form revision=$REPO_VERSION \
+            --form status=started \
+            --form local_username=nightly-build-docker)
+    ROLLBAR_DEPLOY_ID=$(echo $RESPONSE | jq -r '.data.deploy_id')
+    echo $RESPONSE
 fi
 
 mkdir -p ${DOCKER_BUILD}
@@ -58,3 +66,11 @@ sed -i -r "s/revision=\"[A-Za-z0-9._-]+\"/revision=\"${REPO_VERSION}\"/;s/branch
 
 docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:${REPO_VERSION} --build-arg PROJECT_VERSION=${PB_VERSION}-NB-${DATE} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Drollbar_token=${ROLLBAR_TOKEN} -Drollbar_endpoint=${ROLLBAR_ENDPOINT} -Dversion=${PB_VERSION}-NB-${DATE}" --push .
 docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile -t ${DOCKER_REPO}:latest --build-arg PROJECT_VERSION=${PB_VERSION}-NB-${DATE} --build-arg ANT_ARGS="-Dbuildtype=nightly_build -Drollbar_token=${ROLLBAR_TOKEN} -Drollbar_endpoint=${ROLLBAR_ENDPOINT} -Dversion=${PB_VERSION}-NB-${DATE}" --push .
+
+RESPONSE=$(curl -X PATCH https://api.rollbar.com/api/1/deploy/$ROLLBAR_DEPLOY_ID \
+        -H "X-ROLLBAR-ACCESS-TOKEN: $ROLLBAR_WRITE_TOKEN" \
+        --form environment=nightly_build_docker \
+        --form revision=$REPO_VERSION \
+        --form status=succeeded \
+        --form local_username=nightly-build-docker)
+echo $RESPONSE

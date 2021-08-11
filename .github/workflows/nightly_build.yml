@@ -129,6 +129,7 @@ jobs:
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
         ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
         ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
+        ROLLBAR_WRITE_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
       run: |
         cd ${GITHUB_WORKSPACE}/scripts
         chmod 0744 ./nightlyPBDocker.sh
