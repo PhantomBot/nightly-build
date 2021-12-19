@@ -7,81 +7,62 @@ on:
   workflow_dispatch:
 
 jobs:
-  buildtest:
-    name: Test Build on ubuntu-latest with JDK 11.0.4
+  workflowvars:
+    name: Setup Workflow Vars
     runs-on: ubuntu-latest
+    outputs:
+      dockermissing: ${{ steps.check_docker_credentials.outputs.missingsecrets }}
+      rollbarmissing: ${{ steps.check_rollbar_credentials.outputs.missingsecrets }}
+      branch: ${{ steps.build_env.outputs.branch }}
+      revision: ${{ steps.build_env.outputs.revision }}
+      nb_revision: ${{ steps.nb_env.outputs.nb_revision }}
+      shouldbuild: ${{ steps.nb_env.outputs.shouldbuild }}
+      ispublished: ${{ steps.check_published.outputs.ispublished }}
+      dryrun: ${{ steps.check_pbnb.outputs.dryrun }}
     steps:
+    - name: Checkout Nightly Build Repository
+      uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+        path: nb
     - name: Checkout PhantomBot Repository
       uses: actions/checkout@v2
       with:
         repository: PhantomBot/PhantomBot
-        ref: master
         persist-credentials: false
-    - name: Set up JDK 11.0.4
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11.0.4
-    - name: Set up Ant
-      run: sudo apt-get install ant
-    - name: Build with Ant
-      run: ant -noinput -buildfile build.xml test
-  dryrun:
-    name: Dry run on ubuntu-latest with JDK 11.0.4
-    runs-on: ubuntu-latest
-    needs: buildtest
-    if: github.repository != 'PhantomBot/nightly-build'
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-      with:
-        persist-credentials: false
-    - name: Set up JDK 11.0.4
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11.0.4
-    - name: Set up tools
-      run: sudo apt-get install ant perl git zip coreutils jq
-    - name: Dry Run Nightly Build
-      env:
-        DRY_RUN: 'true'
+        path: pb
+    - name: Get Revision Variables
+      id: build_env
       run: |
-        cd ${GITHUB_WORKSPACE}/scripts
-        chmod 0744 ./nightlyPBBuild.sh
-        ./nightlyPBBuild.sh
-  build:
-    name: Build and push on ubuntu-latest with JDK 11.0.4
-    runs-on: ubuntu-latest
-    needs: buildtest
-    if: github.repository == 'PhantomBot/nightly-build'
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-      with:
-        persist-credentials: false
-    - name: Set up JDK 11.0.4
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11.0.4
-    - name: Set up tools
-      run: sudo apt-get install ant perl git zip coreutils
-    - name: Build and Push Nightly Build
+        cd ${GITHUB_WORKSPACE}/pb
+        DATE=$(date +%m%d%Y)
+        VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>) { ($ver) = $_ =~ m/\s+<property name=\"version\" value=\"(.*)\" \/>/; } print $ver;')
+        BRANCH=${VERSION}-NB-${DATE}
+        echo "##[set-output name=branch;]$(echo ${BRANCH})"
+        echo "##[set-output name=revision;]$(git rev-parse --short HEAD)"
+    - name: Get Nightly Variables
+      id: nb_env
       env:
-        TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
-        DRY_RUN: 'false'
-        ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
-        ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
-        ROLLBAR_WRITE_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        REVISION: ${{ steps.build_env.outputs.revision }}
       run: |
-        cd ${GITHUB_WORKSPACE}/scripts
-        chmod 0744 ./nightlyPBBuild.sh
-        ./nightlyPBBuild.sh
-  docker:
-    name: Docker build on ubuntu-latest with JDK 11.0.4
-    runs-on: ubuntu-latest
-    needs: buildtest
-    steps:
-    - name: Check Credentials
-      id: check_credentials
+        cd ${GITHUB_WORKSPACE}/nb
+        NB_REVISION=$(cat last_repo_version)
+        echo "##[set-output name=nb_revision;]$(echo ${NB_REVISION})"
+        if [ "${REVISION}" == "${NB_REVISION}" ]; then
+          ISOLD=find ./historical -type f -printf "%T@ %p\n" | sort -n | cut -d' ' -f 2- | tail -n 1 | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000){ print("true"); } else { print("false"); }}' 2>/dev/null
+          if [ "${ISOLD}" == "true" ]; then
+            echo "Nightly build is old, building anyway..."
+            echo "##[set-output name=shouldbuild;]$(echo yes)"
+          else
+            echo "Nightly build is recent"
+            echo "##[set-output name=shouldbuild;]$(echo no)"
+          fi
+        else
+          echo "New revision, building..."
+          echo "##[set-output name=shouldbuild;]$(echo yes)"
+        fi
+    - name: Check Docker Credentials
+      id: check_docker_credentials
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_CLITOKEN: ${{ secrets.DOCKER_CLITOKEN }}
@@ -100,37 +81,323 @@ jobs:
           echo "All secrets present"
           echo "##[set-output name=missingsecrets;]$(echo no)"
         fi
-    - name: Checkout Repository
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
+    - name: Check Rollbar Credentials
+      id: check_rollbar_credentials
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+      run: |
+        if [ "${ROLLBAR_ACCESS_TOKEN}" == "" ]; then
+          echo "Missing Rollbar Access Token"
+          echo "##[set-output name=missingsecrets;]$(echo yes)"
+        else
+          echo "All secrets present"
+          echo "##[set-output name=missingsecrets;]$(echo no)"
+        fi
+    - name: Check Docker Already Published
+      id: check_published
+      env:
+        MISSING: ${{ steps.check_docker_credentials.outputs.missingsecrets }}
+        DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+        REVISION: ${{ steps.build_env.outputs.revision }}
+      run: |
+        if [ "${MISSING}" == "no" ]; then
+          HTTPCODE=$(curl -s -I "https://registry.hub.docker.com/v2/repositories/${DOCKER_REPO}/tags/${REVISION}/" | head -n 1 | cut  -d$' ' -f2)
+          if [ "${HTTPCODE}" == "200" ]; then
+            echo "Already Published"
+            echo "##[set-output name=ispublished;]$(echo yes)"
+          else
+            echo "Not Published"
+            echo "##[set-output name=ispublished;]$(echo no)"
+          fi
+        else
+          echo "No DockerHub"
+          echo "##[set-output name=ispublished;]$(echo no)"
+        fi
+    - name: Check is PB NB Repo
+      id: check_pbnb
+      env:
+        REPO: ${{ github.repository }}
+      run: |
+        if [ "${REPO}" == "PhantomBot/nightly-build" ]; then
+          echo "Do Nightly Build Publish"
+          echo "##[set-output name=dryrun;]$(echo no)"
+        else
+          echo "Do Dry Run"
+          echo "##[set-output name=dryrun;]$(echo yes)"
+        fi
+  buildtest:
+    name: Test Build on ubuntu-latest with JDK 11
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout PhantomBot Repository
       uses: actions/checkout@v2
       with:
+        repository: PhantomBot/PhantomBot
         persist-credentials: false
-    - name: Set up JDK 11.0.4
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
-      uses: actions/setup-java@v1
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
       with:
-        java-version: 11.0.4
-    - name: Set up tools
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
-      run: sudo apt-get install ant perl git zip coreutils
-    - name: Set up Docker Buildx
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
-      uses: crazy-max/ghaction-docker-buildx@v1
+        distribution: 'temurin'
+        java-version: 11
+    - name: Set up Ant
+      run: sudo apt-get install ant
+    - name: Build with Ant
+      run: ant -noinput -buildfile build.xml test
+  build:
+    name: Build and push on ubuntu-latest with JDK 11
+    runs-on: ubuntu-latest
+    needs: [buildtest, workflowvars]
+    if: ${{ contains(needs.workflowvars.outputs.shouldbuild, 'yes') && contains(needs.workflowvars.outputs.dryrun, 'no') }}
+    steps:
+    - name: Checkout Nightly Build Repository
+      uses: actions/checkout@v2
       with:
-        buildx-version: latest
-        qemu-version: latest
-    - name: Login to DockerHub Registry
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
-      run: echo ${{ secrets.DOCKER_CLITOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
-    - name: Build and Push Nightly Build
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
+        path: nb
+    - name: Checkout PhantomBot Repository
+      uses: actions/checkout@v2
+      with:
+        repository: PhantomBot/PhantomBot
+        path: pb
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: 11
+    - name: Set up Ant
+      run: sudo apt-get install ant
+    - name: Notify Rollbar of Deploy Start
+      if: contains(needs.workflowvars.outputs.rollbarmissing, 'no')
+      id: rollbar_deploy
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "nightly_build"
+        version: ${{ needs.workflowvars.outputs.revision }}
+        status: "started"
       env:
-        TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
-        DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+    - name: Prep Ant script
+      env:
+        BRANCH: ${{ needs.workflowvars.outputs.branch }}
+        REVISION: ${{ needs.workflowvars.outputs.revision }}
+      run: |
+        cd ${GITHUB_WORKSPACE}/pb
+        sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="'$REVISION'"/;s/branch="[A-Za-z0-9._-]+"/branch="'$BRANCH'"/;s/status="[A-Za-z0-9._-]+"/status="release"/' ivy.xml
+        echo $?
+    - name: Build with Ant
+      env:
         ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
         ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
-        ROLLBAR_WRITE_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        BRANCH: ${{ needs.workflowvars.outputs.branch }}
+      run: ant -noinput -Dbuildtype=nightly_build -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -Dversion=$BRANCH -buildfile build.xml jar
+    - name: Create Assets
+      env:
+        FOLDERFULL: ${{ format('PhantomBot-{0}', needs.workflowvars.outputs.branch) }}
+        FOLDERLIN: PhantomBot-nightly-lin
+        FOLDERWIN: PhantomBot-nightly-win
+        FOLDERMAC: PhantomBot-nightly-mac
+        FOLDERARMBSDOTHER: PhantomBot-nightly-arm-bsd-other
       run: |
-        cd ${GITHUB_WORKSPACE}/scripts
-        chmod 0744 ./nightlyPBDocker.sh
-        ./nightlyPBDocker.sh
+        cd ${GITHUB_WORKSPACE}/pb
+        mkdir dist/$FOLDERLIN
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh
+        mkdir dist/$FOLDERWIN
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh
+        mkdir dist/$FOLDERMAC
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh
+        mkdir dist/$FOLDERARMBSDOTHER
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-docker.sh
+        cd dist
+        rm -rf $FOLDERFULL
+        echo Zip Lin
+        mv -v $FOLDERLIN $FOLDERFULL
+        cd $FOLDERFULL
+        zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
+        cd ..
+        mv -v $FOLDERFULL/$FOLDERLIN.zip ./$FOLDERLIN.zip
+        rm -rf $FOLDERFULL
+        echo Zip Win
+        mv -v $FOLDERWIN $FOLDERFULL
+        cd $FOLDERFULL
+        zip -m -9 -X -r $FOLDERWIN.zip $FOLDERFULL
+        cd ..
+        mv -v $FOLDERFULL/$FOLDERWIN.zip ./$FOLDERWIN.zip
+        rm -rf $FOLDERFULL
+        echo Zip Mac
+        mv -v $FOLDERMAC $FOLDERFULL
+        cd $FOLDERFULL
+        zip -m -9 -X -r $FOLDERMAC.zip $FOLDERFULL
+        cd ..
+        mv -v $FOLDERFULL/$FOLDERMAC.zip ./$FOLDERMAC.zip
+        rm -rf $FOLDERFULL
+        echo Zip Arm/BSD/Other
+        mv -v $FOLDERARMBSDOTHER $FOLDERFULL
+        cd $FOLDERFULL
+        zip -m -9 -X -r $FOLDERARMBSDOTHER.zip $FOLDERFULL
+        cd ..
+        mv -v $FOLDERFULL/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
+        rm -rf $FOLDERFULL
+    - name: Prep Commit
+      id: prep_commit
+      env:
+        FOLDERLIN: PhantomBot-nightly-lin
+        FOLDERWIN: PhantomBot-nightly-win
+        FOLDERMAC: PhantomBot-nightly-mac
+        FOLDERARMBSDOTHER: PhantomBot-nightly-arm-bsd-other
+        REVISION: ${{ needs.workflowvars.outputs.revision }}
+        NB_REVISION: ${{ needs.workflowvars.outputs.nb_revision }}
+      run: |
+        cd ${GITHUB_WORKSPACE}/nb
+        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERLIN.zip ./$FOLDERLIN.zip
+        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERWIN.zip ./$FOLDEWLIN.zip
+        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERMAC.zip ./$FOLDERMAC.zip
+        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
+        DATEDZIP=PhantomBot-nightly-$(date +%m%d%Y.%H%M%S).zip
+        cp -f ./$FOLDERARMBSDOTHER.zip ./historical/${DATEDZIP}
+        COMMITSTR="Nightly Build at $(date '+%b %d %H:%M:%S %Y (%Z%z)')"
+        if [ "${NB_REVISION}" == "${REVISION}" ]; then
+          export BUILD_STR="${COMMITSTR} (Repo: ${REVISION}) (No Changes)"
+        else
+          export BUILD_STR="${COMMITSTR} (Repo: ${REVISION}) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/${NB_REVISION}...${REVISION}))"
+        fi
+        echo "##[set-output name=commitmsg;]$(echo ${BUILD_STR})"
+        cat builds.md | perl -e 'while(<STDIN>) { if ($_ =~ /------/ ) { print $_; print "###### $ENV{BUILD_STR}\n"; } else { print $_; } }' > builds.new
+        head -25 builds.new > builds.md
+        rm -f builds.new
+        echo ${REVISION} > last_repo_version
+        echo "##[set-output name=gitadd;]$(echo ${DATEDZIP})"
+        cd ${GITHUB_WORKSPACE}/nb/historical
+        OLDFILES=find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000){ printf("timestamp: %d diff: %d\n%s\n",t, d, s); print "./historical/"$1}}' 2>/dev/null | xargs echo
+        echo "##[set-output name=gitrm;]$(echo ${OLDFILES})"
+    - name: Commit Changes
+      uses: EndBug/add-and-commit@v7
+      with:
+        cwd: ${{ env.GITHUB_WORKSPACE }}/nb
+        branch: master
+        default_author: github_actions
+        add: ${{ steps.prep_commit.outputs.gitadd }}
+        remove: ${{ steps.prep_commit.outputs.gitrm }}
+        message: ${{ steps.prep_commit.outputs.commitmsg }}
+    - name: Notify Rollbar of Deploy Failure
+      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "nightly_build"
+        version: ${{ needs.workflowvars.outputs.revision }}
+        status: "failed"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
+    - name: Notify Rollbar of Deploy Success
+      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && success() }}
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "nightly_build"
+        version: ${{ needs.workflowvars.outputs.revision }}
+        status: "succeeded"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
+  docker:
+    name: Docker build on ubuntu-latest with JDK 11
+    runs-on: ubuntu-latest
+    needs: [buildtest, workflowvars]
+    if: ${{ contains(needs.workflowvars.outputs.ispublished, 'no') && contains(needs.workflowvars.outputs.dryrun, 'no') }}
+    steps:
+    - name: Checkout PhantomBot Repository
+      uses: actions/checkout@v2
+      with:
+        repository: PhantomBot/PhantomBot
+        ref: refs/tags/${{ needs.workflowvars.outputs.branch }}
+        persist-credentials: false
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: linux/amd64,linux/arm64,linux/arm/v7
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        version: latest
+    - name: Login to DockerHub Registry
+      if: contains(needs.workflowvars.outputs.dockermissing, 'no')
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_CLITOKEN }}
+        logout: true
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        logout: true
+    - name: Notify Rollbar of Deploy Start
+      if: contains(needs.workflowvars.outputs.rollbarmissing, 'no')
+      id: rollbar_deploy
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "nightly_build_docker"
+        version: ${{ needs.workflowvars.outputs.revision }}
+        status: "started"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+    - name: Prep Ant script
+      env:
+        BRANCH: ${{ needs.workflowvars.outputs.branch }}
+        REVISION: ${{ needs.workflowvars.outputs.revision }}
+      run: |
+        sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="'$REVISION'"/;s/branch="[A-Za-z0-9._-]+"/branch="'$BRANCH'"/' ivy.xml
+        echo $?
+    - name: Build and Push DockerHub
+      if: contains(needs.workflowvars.outputs.dockermissing, 'no')
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        platforms: linux/amd64,linux/arm64,linux/arm/v7
+        push: true
+        build-args: |
+          PROJECT_VERSION=${{ needs.workflowvars.outputs.branch }}
+          ANT_ARGS="-Dbuildtype=nightly_build -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }} -Dversion=${{ needs.workflowvars.outputs.branch }}"
+        tags: |
+          ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO }}:${{ needs.workflowvars.outputs.revision }}
+          ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO }}:latest
+    - name: Build and Push GitHub Containers
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        platforms: linux/amd64,linux/arm64,linux/arm/v7
+        push: true
+        build-args: |
+          PROJECT_VERSION=${{ needs.workflowvars.outputs.branch }}
+          ANT_ARGS="-Dbuildtype=nightly_build -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }} -Dversion=${{ needs.workflowvars.outputs.branch }}"
+        tags: |
+          ghcr.io/${{ github.repository }}:${{ needs.workflowvars.outputs.revision }}
+          ghcr.io/${{ github.repository }}:latest
+    - name: Notify Rollbar of Deploy Failure
+      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "nightly_build_docker"
+        version: ${{ needs.workflowvars.outputs.revision }}
+        status: "failed"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
+    - name: Notify Rollbar of Deploy Success
+      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && success() }}
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "nightly_build_docker"
+        version: ${{ needs.workflowvars.outputs.revision }}
+        status: "succeeded"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
