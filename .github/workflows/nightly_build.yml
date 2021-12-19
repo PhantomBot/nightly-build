@@ -278,7 +278,8 @@ jobs:
         echo ${REVISION} > last_repo_version
         echo "##[set-output name=gitadd;]$(echo ${DATEDZIP})"
         cd ${GITHUB_WORKSPACE}/nb/historical
-        OLDFILES=$(find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000){ printf("timestamp: %d diff: %d\n%s\n",t, d, s); print "./historical/"$1}}' 2>/dev/null | xargs echo)
+        find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000 && length($1) > 4){ printf("timestamp: %d diff: %d\n%s\n",t, d, s);}}' 2>/dev/null
+        OLDFILES=$(find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000 && length($1) > 4){ print "./historical/"$1}}' 2>/dev/null | xargs echo)
         echo "##[set-output name=gitrm;]$(echo ${OLDFILES})"
     - name: Commit Changes
       uses: EndBug/add-and-commit@v7
