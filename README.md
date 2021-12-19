@@ -12,7 +12,7 @@ Four build files are present.
 ### Docker
 PhantomBot publishes official builds to Docker Hub and GitHub Container Registry
 * [DockerHub](https://hub.docker.com/r/gmt2001/phantombot-nightly)
-* [GHCR](https://github.com/orgs/PhantomBot/pkgs/container/nightly-build)
+* [GHCR](https://github.com/PhantomBot/nightly-build/pkgs/container/nightly-build)
 * [Docker Compose File](https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml) (Edit to target nightly)
 
 # Notice
