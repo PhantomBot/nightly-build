@@ -22,4 +22,3 @@
 ###### Nightly Build at Nov 15 12:24:11 2021 (UTC+0000) (Repo: 19bd132) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/53cb050...19bd132))
 ###### Nightly Build at Nov 07 00:42:20 2021 (UTC+0000) (Repo: 53cb050) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/fe6d99b...53cb050))
 ###### Nightly Build at Nov 01 12:24:01 2021 (UTC+0000) (Repo: fe6d99b) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/9a87458...fe6d99b))
-###### Nightly Build at Oct 24 12:22:12 2021 (UTC+0000) (Repo: 9a87458) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/187560b...9a87458))
