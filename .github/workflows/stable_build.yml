@@ -7,31 +7,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  buildtest:
-    name: Test Build on ubuntu-latest with JDK 11.0.4
+  workflowvars:
+    name: Setup Workflow Vars
     runs-on: ubuntu-latest
+    outputs:
+      dockermissing: ${{ steps.check_docker_credentials.outputs.missingsecrets }}
+      rollbarmissing: ${{ steps.check_rollbar_credentials.outputs.missingsecrets }}
+      branch: ${{ steps.build_env.outputs.branch }}
+      version: ${{ steps.build_env.outputs.version }}
+      revision: ${{ steps.build_env.outputs.revision }}
+      ispublished: ${{ steps.check_published.outputs.ispublished }}
     steps:
-    - name: Checkout PhantomBot Repository
-      uses: actions/checkout@v2
-      with:
-        repository: PhantomBot/PhantomBot
-        ref: master
-        persist-credentials: false
-    - name: Set up JDK 11.0.4
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11.0.4
-    - name: Set up Ant
-      run: sudo apt-get install ant
-    - name: Build with Ant
-      run: ant -noinput -buildfile build.xml test
-  docker:
-    name: Docker build on ubuntu-latest with JDK 11.0.4
-    runs-on: ubuntu-latest
-    needs: buildtest
-    steps:
-    - name: Check Credentials
-      id: check_credentials
+    - name: Get Revision Variables
+      id: build_env
+      run: |
+        LATEST=$(curl --silent "https://api.github.com/repos/PhantomBot/PhantomBot/releases/latest")
+        BRANCH=$(echo $LATEST | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        SHA=$(curl --silent "https://api.github.com/repos/PhantomBot/PhantomBot/commits/${BRANCH}" | grep '"sha":' | sed -E 's/.*"([^"]+)".*/\1/')
+        echo "##[set-output name=branch;]$(echo ${BRANCH})"
+        echo "##[set-output name=version;]$(echo ${BRANCH:1})"
+        echo "##[set-output name=revision;]$(echo ${SHA:0:7})"
+    - name: Check Docker Credentials
+      id: check_docker_credentials
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_CLITOKEN: ${{ secrets.DOCKER_CLITOKEN }}
@@ -50,37 +47,127 @@ jobs:
           echo "All secrets present"
           echo "##[set-output name=missingsecrets;]$(echo no)"
         fi
-    - name: Checkout Repository
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
+    - name: Check Rollbar Credentials
+      id: check_rollbar_credentials
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+      run: |
+        if [ "${ROLLBAR_ACCESS_TOKEN}" == "" ]; then
+          echo "Missing Rollbar Access Token"
+          echo "##[set-output name=missingsecrets;]$(echo yes)"
+        else
+          echo "All secrets present"
+          echo "##[set-output name=missingsecrets;]$(echo no)"
+        fi
+    - name: Check Docker Already Published
+      id: check_published
+      env:
+        MISSING: ${{ steps.check_docker_credentials.outputs.missingsecrets }}
+        DOCKER_REPO_STABLE: ${{ secrets.DOCKER_REPO_STABLE }}
+        VERSION: ${{ steps.build_env.outputs.version }}
+      run: |
+        HTTPCODE=$(curl -s -I "https://registry.hub.docker.com/v2/repositories/${DOCKER_REPO_STABLE}/tags/${VERSION}/" | head -n 1 | cut  -d$' ' -f2)
+        if [ "${HTTPCODE}" == "200" ]; then
+          echo "##[set-output name=ispublished;]$(echo yes)"
+        else
+          echo "##[set-output name=ispublished;]$(echo no)"
+        fi
+  buildtest:
+    name: Test Build on ubuntu-latest with JDK 11
+    runs-on: ubuntu-latest
+    needs: workflowvars
+    steps:
+    - name: Checkout PhantomBot Repository
       uses: actions/checkout@v2
       with:
+        repository: PhantomBot/PhantomBot
+        ref: refs/tags/${{ needs.workflowvars.outputs.branch }}
         persist-credentials: false
-    - name: Set up JDK 11.0.4
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
-      uses: actions/setup-java@v1
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
       with:
-        java-version: 11.0.4
-    - name: Set up tools
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
-      run: sudo apt-get install ant perl git zip coreutils
+        distribution: 'temurin'
+        java-version: 11
+    - name: Set up Ant
+      run: sudo apt-get install ant
+    - name: Build with Ant
+      run: ant -noinput -buildfile build.xml test
+  docker:
+    name: Docker build on ubuntu-latest with JDK 11
+    runs-on: ubuntu-latest
+    needs: [buildtest, workflowvars]
+    if: {{ contains(needs.workflowvars.outputs.dockermissing, 'no') && contains(needs.workflowvars.outputs.ispublished, 'no') }}
+    steps:
+    - name: Checkout PhantomBot Repository
+      uses: actions/checkout@v2
+      with:
+        repository: PhantomBot/PhantomBot
+        ref: refs/tags/${{ needs.workflowvars.outputs.branch }}
+        persist-credentials: false
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: linux/amd64,linux/arm64,linux/arm/v7
     - name: Set up Docker Buildx
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
-      uses: crazy-max/ghaction-docker-buildx@v1
+      uses: docker/setup-buildx-action@v1
       with:
-        buildx-version: latest
-        qemu-version: latest
+        version: latest
     - name: Login to DockerHub Registry
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
-      run: echo ${{ secrets.DOCKER_CLITOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
-    - name: Build and Push Stable Build
-      if: contains(steps.check_credentials.outputs.missingsecrets, 'no')
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_CLITOKEN }}
+        logout: true
+    - name: Notify Rollbar of Deploy Start
+      if: contains(needs.workflowvars.outputs.rollbarmissing, 'no')
+      id: rollbar_deploy
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "stable_docker"
+        version: ${{ needs.workflowvars.outputs.version }}
+        status: "started"
       env:
-        TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
-        DOCKER_REPO_STABLE: ${{ secrets.DOCKER_REPO_STABLE }}
-        ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
-        ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
-        ROLLBAR_WRITE_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+    - name: Prep Ant script
+      env:
+        BRANCH: ${{ needs.workflowvars.outputs.branch }}
+        REVISION: ${{ needs.workflowvars.outputs.revision }}
       run: |
-        cd ${GITHUB_WORKSPACE}/scripts
-        chmod 0744 ./stablePBDocker.sh
-        ./stablePBDocker.sh
+        sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="'$REVISION'"/;s/branch="[A-Za-z0-9._-]+"/branch="'$BRANCH'"/;s/status="[A-Za-z0-9._-]+"/status="release"/' ivy.xml
+        echo $?
+    - name: Build and Push DockerHub
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        platforms: linux/amd64,linux/arm64,linux/arm/v7
+        push: true
+        build-args: |
+          PROJECT_VERSION=${{ needs.workflowvars.outputs.version }}
+          ANT_ARGS="-Dbuildtype=stable -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}"
+        tags: |
+          ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO_STABLE }}:${{ needs.workflowvars.outputs.version }}
+          ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO_STABLE }}:latest
+    - name: Notify Rollbar of Deploy Failure
+      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "stable_docker"
+        version: ${{ needs.workflowvars.outputs.version }}
+        status: "failed"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
+    - name: Notify Rollbar of Deploy Success
+      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && success() }}
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "stable_docker"
+        version: ${{ needs.workflowvars.outputs.version }}
+        status: "succeeded"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}

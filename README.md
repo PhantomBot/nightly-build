@@ -9,6 +9,12 @@ Four build files are present.
 * _PhantomBot-nightly-mac.zip_ - Contains the entire bot, but only the Java environment for macOS 64-bit (x86_64).
 * _PhantomBot-nightly-arm-bsd-other.zip_ - Contains the entire bot, but no Java environment. Use this for Raspberry Pi, Linux 32-bit (x86) with OpenJDK 11, or BSD. The launch.sh script will provide instructions if you attempt to run it without the proper JDK.
 
+### Docker
+PhantomBot publishes official builds to Docker Hub and GitHub Container Registry
+* [DockerHub](https://hub.docker.com/r/gmt2001/phantombot-nightly)
+* [GHCR](https://github.com/orgs/PhantomBot/pkgs/container/nightly-build)
+* [Docker Compose File](https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml) (Edit to target nightly)
+
 # Notice
 When running this from Linux with the included Java environment, you must `chmod u+x launch.sh && chmod u+x java-runtime-linux/bin/java`
 
