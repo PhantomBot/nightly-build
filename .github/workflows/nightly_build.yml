@@ -273,7 +273,7 @@ jobs:
         echo ${REVISION} > last_repo_version
         echo "##[set-output name=gitadd;]$(echo ${DATEDZIP})"
         cd ${GITHUB_WORKSPACE}/nb/historical
-        OLDFILES=find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000){ printf("timestamp: %d diff: %d\n%s\n",t, d, s); print "./historical/"$1}}' 2>/dev/null | xargs echo
+        OLDFILES=$(find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000){ printf("timestamp: %d diff: %d\n%s\n",t, d, s); print "./historical/"$1}}' 2>/dev/null | xargs echo)
         echo "##[set-output name=gitrm;]$(echo ${OLDFILES})"
     - name: Commit Changes
       uses: EndBug/add-and-commit@v7
@@ -281,7 +281,7 @@ jobs:
         cwd: ${{ env.GITHUB_WORKSPACE }}/nb
         branch: master
         default_author: github_actions
-        add: ${{ steps.prep_commit.outputs.gitadd }}
+        add: ./PhantomBot-nightly-lin.zip ./PhantomBot-nightly-win.zip ./PhantomBot-nightly-mac.zip PhantomBot-nightly-arm-bsd-other.zip ./historical/${{ steps.prep_commit.outputs.gitadd }} builds.md last_repo_version
         remove: ${{ steps.prep_commit.outputs.gitrm }}
         message: ${{ steps.prep_commit.outputs.commitmsg }}
     - name: Notify Rollbar of Deploy Failure
