@@ -260,7 +260,7 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/nb
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERLIN.zip ./$FOLDERLIN.zip
-        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERWIN.zip ./$FOLDEWLIN.zip
+        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERWIN.zip ./$FOLDERWIN.zip
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERMAC.zip ./$FOLDERMAC.zip
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
         DATEDZIP=PhantomBot-nightly-$(date +%m%d%Y.%H%M%S).zip
