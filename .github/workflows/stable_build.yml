@@ -70,7 +70,8 @@ jobs:
         VERSION: ${{ steps.build_env.outputs.version }}
       run: |
         if [ "${MISSING}" == "no" ]; then
-          HTTPCODE=$(curl -s -I "https://registry.hub.docker.com/v2/repositories/${DOCKER_REPO}/tags/${REVISION}/" | head -n 1 | cut  -d$' ' -f2)
+          HTTPCODE=$(curl -s -I "https://registry.hub.docker.com/v2/repositories/${DOCKER_REPO_STABLE}/tags/${VERSION}/" | head -n 1 | cut  -d$' ' -f2)
+          echo ${HTTPCODE}
           if [ "${HTTPCODE}" == "200" ]; then
             echo "Already Published"
             echo "##[set-output name=ispublished;]$(echo yes)"
