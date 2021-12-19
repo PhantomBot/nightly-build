@@ -22,10 +22,13 @@ jobs:
       id: build_env
       run: |
         LATEST=$(curl --silent "https://api.github.com/repos/PhantomBot/PhantomBot/releases/latest")
-        BRANCH=$(echo $LATEST | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-        SHA=$(curl --silent "https://api.github.com/repos/PhantomBot/PhantomBot/commits/${BRANCH}" | grep '"sha":' | sed -E 's/.*"([^"]+)".*/\1/')
+        BRANCH=$(echo $LATEST | grep '"tag_name":' | sed -E 's/.*"tag_name":\s*"([^"]+)".*/\1/')
+        SHA=$(curl --silent "https://api.github.com/repos/PhantomBot/PhantomBot/commits/${BRANCH}" | grep '"sha":' | sed -E 's/.*"sha":\s*"([^"]+)".*/\1/')
+        echo ${BRANCH}
         echo "##[set-output name=branch;]$(echo ${BRANCH})"
+        echo ${BRANCH:1}
         echo "##[set-output name=version;]$(echo ${BRANCH:1})"
+        echo ${SHA:0:7}
         echo "##[set-output name=revision;]$(echo ${SHA:0:7})"
     - name: Check Docker Credentials
       id: check_docker_credentials
@@ -66,10 +69,17 @@ jobs:
         DOCKER_REPO_STABLE: ${{ secrets.DOCKER_REPO_STABLE }}
         VERSION: ${{ steps.build_env.outputs.version }}
       run: |
-        HTTPCODE=$(curl -s -I "https://registry.hub.docker.com/v2/repositories/${DOCKER_REPO_STABLE}/tags/${VERSION}/" | head -n 1 | cut  -d$' ' -f2)
-        if [ "${HTTPCODE}" == "200" ]; then
-          echo "##[set-output name=ispublished;]$(echo yes)"
+        if [ "${MISSING}" == "no" ]; then
+          HTTPCODE=$(curl -s -I "https://registry.hub.docker.com/v2/repositories/${DOCKER_REPO}/tags/${REVISION}/" | head -n 1 | cut  -d$' ' -f2)
+          if [ "${HTTPCODE}" == "200" ]; then
+            echo "Already Published"
+            echo "##[set-output name=ispublished;]$(echo yes)"
+          else
+            echo "Not Published"
+            echo "##[set-output name=ispublished;]$(echo no)"
+          fi
         else
+          echo "No DockerHub"
           echo "##[set-output name=ispublished;]$(echo no)"
         fi
   buildtest:
