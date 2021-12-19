@@ -45,7 +45,7 @@ jobs:
         echo "##[set-output name=branch;]$(echo ${BRANCH})"
         echo $(git rev-parse --short HEAD)
         echo "##[set-output name=revision;]$(git rev-parse --short HEAD)"
-        echo ${REPONAME} | awk '{print tolower($0)}
+        echo ${REPONAME} | awk '{print tolower($0)}'
         echo "##[set-output name=ghcrrepo;]$(echo ${REPONAME} | awk '{print tolower($0)}')"
     - name: Get Nightly Variables
       id: nb_env
