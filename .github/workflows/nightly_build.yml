@@ -15,6 +15,7 @@ jobs:
       rollbarmissing: ${{ steps.check_rollbar_credentials.outputs.missingsecrets }}
       branch: ${{ steps.build_env.outputs.branch }}
       revision: ${{ steps.build_env.outputs.revision }}
+      ghcrrepo: ${{ steps.build_env.outputs.ghcrrepo }}
       nb_revision: ${{ steps.nb_env.outputs.nb_revision }}
       shouldbuild: ${{ steps.nb_env.outputs.shouldbuild }}
       ispublished: ${{ steps.check_published.outputs.ispublished }}
@@ -33,6 +34,8 @@ jobs:
         path: pb
     - name: Get Revision Variables
       id: build_env
+      env:
+        REPONAME: ${{ github.repository }}
       run: |
         cd ${GITHUB_WORKSPACE}/pb
         DATE=$(date +%m%d%Y)
@@ -42,6 +45,8 @@ jobs:
         echo "##[set-output name=branch;]$(echo ${BRANCH})"
         echo $(git rev-parse --short HEAD)
         echo "##[set-output name=revision;]$(git rev-parse --short HEAD)"
+        echo ${REPONAME} | awk '{print tolower($0)}
+        echo "##[set-output name=ghcrrepo;]$(echo ${REPONAME} | awk '{print tolower($0)}')"
     - name: Get Nightly Variables
       id: nb_env
       env:
@@ -382,8 +387,8 @@ jobs:
           PROJECT_VERSION=${{ needs.workflowvars.outputs.branch }}
           ANT_ARGS="-Dbuildtype=nightly_build -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }} -Dversion=${{ needs.workflowvars.outputs.branch }}"
         tags: |
-          ghcr.io/${{ github.repository }}:${{ needs.workflowvars.outputs.revision }}
-          ghcr.io/${{ github.repository }}:latest
+          ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:${{ needs.workflowvars.outputs.revision }}
+          ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:latest
     - name: Notify Rollbar of Deploy Failure
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
       uses: rollbar/github-deploy-action@2.1.1
