@@ -287,7 +287,7 @@ jobs:
         cwd: ${{ env.GITHUB_WORKSPACE }}/nb
         branch: master
         default_author: github_actions
-        add: ./PhantomBot-nightly-lin.zip ./PhantomBot-nightly-win.zip ./PhantomBot-nightly-mac.zip ./PhantomBot-nightly-arm-bsd-other.zip ./historical/${{ steps.prep_commit.outputs.gitadd }} builds.md last_repo_version
+        add: ./PhantomBot-nightly-lin.zip ./PhantomBot-nightly-win.zip ./PhantomBot-nightly-mac.zip ./PhantomBot-nightly-arm-bsd-other.zip ./historical/${{ steps.prep_commit.outputs.gitadd }} ./builds.md ./last_repo_version
         remove: ${{ steps.prep_commit.outputs.gitrm }}
         message: ${{ steps.prep_commit.outputs.commitmsg }}
     - name: Notify Rollbar of Deploy Failure
