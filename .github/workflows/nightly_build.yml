@@ -375,8 +375,8 @@ jobs:
           PROJECT_VERSION=${{ needs.workflowvars.outputs.branch }}
           ANT_ARGS=-Dbuildtype=nightly_build -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }} -Dversion=${{ needs.workflowvars.outputs.branch }}
         tags: |
-          ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO }}:${{ needs.workflowvars.outputs.revision }}
-          ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO }}:latest
+          ${{ secrets.DOCKER_REPO }}:${{ needs.workflowvars.outputs.revision }}
+          ${{ secrets.DOCKER_REPO }}:latest
     - name: Build and Push GitHub Containers
       uses: docker/build-push-action@v2
       with:
