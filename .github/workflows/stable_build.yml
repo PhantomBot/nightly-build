@@ -158,8 +158,8 @@ jobs:
           PROJECT_VERSION=${{ needs.workflowvars.outputs.version }}
           ANT_ARGS=-Dbuildtype=stable -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}
         tags: |
-          ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO_STABLE }}:${{ needs.workflowvars.outputs.version }}
-          ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO_STABLE }}:latest
+          ${{ secrets.DOCKER_REPO_STABLE }}:${{ needs.workflowvars.outputs.version }}
+          ${{ secrets.DOCKER_REPO_STABLE }}:latest
     - name: Notify Rollbar of Deploy Failure
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
       uses: rollbar/github-deploy-action@2.1.1
