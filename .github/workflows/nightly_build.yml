@@ -335,7 +335,8 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
         URL: ${{ secrets.SERVER_URL }}
         VERSION: ${{ needs.workflowvars.outputs.version }}
-      run: curl -X POST $URL -H "X-ACCESS-TOKEN: $ACCESS_TOKEN" -d "{\"type\":\"nightly\",\"version\":\"$VERSION\"}"
+      run: |
+        curl -X POST $URL -H "X-ACCESS-TOKEN: $ACCESS_TOKEN" -d "{\"type\":\"nightly\",\"version\":\"$VERSION\"}"
   docker:
     name: Docker build on ubuntu-latest with JDK 11
     runs-on: ubuntu-latest
@@ -442,4 +443,5 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
         URL: ${{ secrets.SERVER_URL }}
         VERSION: ${{ needs.workflowvars.outputs.version }}
-      run: curl -X POST $URL -H "X-ACCESS-TOKEN: $ACCESS_TOKEN" -d "{\"type\":\"nightly_docker\",\"version\":\"$VERSION\"}"
+      run: |
+        curl -X POST $URL -H "X-ACCESS-TOKEN: $ACCESS_TOKEN" -d "{\"type\":\"nightly_docker\",\"version\":\"$VERSION\"}"
