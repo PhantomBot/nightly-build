@@ -334,7 +334,7 @@ jobs:
       env:
         ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
         URL: ${{ secrets.SERVER_URL }}
-        VERSION: ${{ needs.workflowvars.outputs.version }}
+        VERSION: ${{ needs.workflowvars.outputs.revision }}
       run: |
         curl -X POST $URL -H "x-access-token: $ACCESS_TOKEN" -H "Content-Type: application/json; charset=UTF-8" -d "{\"type\":\"nightly\",\"version\":\"$VERSION\"}"
   docker:
@@ -442,6 +442,6 @@ jobs:
       env:
         ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
         URL: ${{ secrets.SERVER_URL }}
-        VERSION: ${{ needs.workflowvars.outputs.version }}
+        VERSION: ${{ needs.workflowvars.outputs.revision }}
       run: |
         curl -X POST $URL -H "x-access-token: $ACCESS_TOKEN" -H "Content-Type: application/json; charset=UTF-8" -d "{\"type\":\"nightly_docker\",\"version\":\"$VERSION\"}"
