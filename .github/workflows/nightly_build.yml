@@ -341,7 +341,7 @@ jobs:
     name: Docker build on ubuntu-latest with JDK 11
     runs-on: ubuntu-latest
     needs: [buildtest, workflowvars]
-    if: ${{ contains(needs.workflowvars.outputs.ispublished, 'no') && contains(needs.workflowvars.outputs.dryrun, 'no') }}
+    if: contains(needs.workflowvars.outputs.ispublished, 'no')
     steps:
     - name: Checkout PhantomBot Repository
       uses: actions/checkout@v2
@@ -364,6 +364,7 @@ jobs:
         password: ${{ secrets.DOCKER_CLITOKEN }}
         logout: true
     - name: Login to GitHub Container Registry
+      if: contains(needs.workflowvars.outputs.dryrun, 'no')
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
@@ -403,6 +404,7 @@ jobs:
           ${{ secrets.DOCKER_REPO }}:${{ needs.workflowvars.outputs.revision }}
           ${{ secrets.DOCKER_REPO }}:latest
     - name: Build and Push GitHub Containers
+      if: contains(needs.workflowvars.outputs.dryrun, 'no')
       uses: docker/build-push-action@v2
       with:
         context: .
