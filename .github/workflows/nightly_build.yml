@@ -228,13 +228,13 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/pb
         mkdir dist/$FOLDERLIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh
         mkdir dist/$FOLDERWIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh
         mkdir dist/$FOLDERMAC
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh
         mkdir dist/$FOLDERARMBSDOTHER
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-docker.sh --exclude docker-entrypoint.sh
         cd dist
         rm -rf $FOLDERFULL
         echo Zip Lin
