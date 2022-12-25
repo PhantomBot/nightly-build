@@ -22,14 +22,20 @@ jobs:
       id: build_env
       run: |
         LATEST=$(curl --silent "https://api.github.com/repos/PhantomBot/PhantomBot/releases/latest")
+        echo "::group::Curl Result"
+        echo ${LATEST}
+        echo
+        echo
+        echo $(echo $LATEST | grep '"tag_name":')
+        echo "::endgroup::"
         BRANCH=$(echo $LATEST | grep '"tag_name":' | sed -E 's/.*"tag_name":\s*"([^"]+)".*/\1/')
         SHA=$(curl --silent "https://api.github.com/repos/PhantomBot/PhantomBot/commits/${BRANCH}" | grep '"sha":' | sed -E 's/.*"sha":\s*"([^"]+)".*/\1/')
         echo ${BRANCH}
-        echo "##[set-output name=branch;]$(echo ${BRANCH})"
+        echo "branch=${BRANCH}" >> $GITHUB_OUTPUT
         echo ${BRANCH:1}
-        echo "##[set-output name=version;]$(echo ${BRANCH:1})"
+        echo "version=${BRANCH:1}" >> $GITHUB_OUTPUT
         echo ${SHA:0:7}
-        echo "##[set-output name=revision;]$(echo ${SHA:0:7})"
+        echo "revision=${SHA:0:7}" >> $GITHUB_OUTPUT
     - name: Check Docker Credentials
       id: check_docker_credentials
       env:
@@ -39,16 +45,16 @@ jobs:
       run: |
         if [ "${DOCKER_USER}" == "" ]; then
           echo "Missing User"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         elif [ "${DOCKER_CLITOKEN}" == "" ]; then
           echo "Missing Cli Token"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         elif [ "${DOCKER_REPO_STABLE}" == "" ]; then
           echo "Missing Repo"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         else
           echo "All secrets present"
-          echo "##[set-output name=missingsecrets;]$(echo no)"
+          echo "missingsecrets=no" >> $GITHUB_OUTPUT
         fi
     - name: Check Rollbar Credentials
       id: check_rollbar_credentials
@@ -57,10 +63,10 @@ jobs:
       run: |
         if [ "${ROLLBAR_ACCESS_TOKEN}" == "" ]; then
           echo "Missing Rollbar Access Token"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         else
           echo "All secrets present"
-          echo "##[set-output name=missingsecrets;]$(echo no)"
+          echo "missingsecrets=no" >> $GITHUB_OUTPUT
         fi
     - name: Check Docker Already Published
       id: check_published
@@ -74,14 +80,14 @@ jobs:
           echo ${HTTPCODE}
           if [ "${HTTPCODE}" == "200" ]; then
             echo "Already Published"
-            echo "##[set-output name=ispublished;]$(echo yes)"
+            echo "ispublished=yes" >> $GITHUB_OUTPUT
           else
             echo "Not Published"
-            echo "##[set-output name=ispublished;]$(echo no)"
+            echo "ispublished=no" >> $GITHUB_OUTPUT
           fi
         else
           echo "No DockerHub"
-          echo "##[set-output name=ispublished;]$(echo no)"
+          echo "ispublished=no" >> $GITHUB_OUTPUT
         fi
   buildtest:
     name: Test Build on ubuntu-latest with JDK 11
