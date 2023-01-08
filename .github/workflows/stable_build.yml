@@ -21,7 +21,7 @@ jobs:
     - name: Get Revision Variables
       id: build_env
       run: |
-        LATEST=$(curl --silent "https://api.github.com/repos/PhantomBot/PhantomBot/releases/latest")
+        LATEST=$(curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --silent "https://api.github.com/repos/PhantomBot/PhantomBot/releases/latest")
         echo "::group::Curl Result"
         echo ${LATEST}
         echo
