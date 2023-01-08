@@ -40,8 +40,7 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/pb
         DATE=$(date +%m%d%Y)
-        VERSION=$(grep "property name=\"version\"" build.xml | perl -e 'while(<STDIN>) { ($ver) = $_ =~ m/\s+<property name=\"version\" value=\"(.*)\" \/>/; } print $ver;')
-        BRANCH=${VERSION}-NB-${DATE}
+        BRANCH=NB-${DATE}
         echo ${BRANCH}
         echo "branch=${BRANCH}" >> $GITHUB_OUTPUT
         echo $(git rev-parse --short HEAD)
