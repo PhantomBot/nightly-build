@@ -178,7 +178,7 @@ jobs:
     - name: Notify Rollbar of Deploy Start
       if: contains(needs.workflowvars.outputs.rollbarmissing, 'no')
       id: rollbar_deploy
-      uses: rollbar/github-deploy-action@2.1.1
+      uses: rollbar/github-deploy-action@2.1.2
       with:
         environment: "stable_docker"
         version: ${{ needs.workflowvars.outputs.version }}
@@ -210,7 +210,7 @@ jobs:
           ${{ secrets.DOCKER_REPO_STABLE }}:latest
     - name: Notify Rollbar of Deploy Failure
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
-      uses: rollbar/github-deploy-action@2.1.1
+      uses: rollbar/github-deploy-action@2.1.2
       with:
         environment: "stable_docker"
         version: ${{ needs.workflowvars.outputs.version }}
@@ -221,7 +221,7 @@ jobs:
         DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
     - name: Notify Rollbar of Deploy Success
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && success() }}
-      uses: rollbar/github-deploy-action@2.1.1
+      uses: rollbar/github-deploy-action@2.1.2
       with:
         environment: "stable_docker"
         version: ${{ needs.workflowvars.outputs.version }}

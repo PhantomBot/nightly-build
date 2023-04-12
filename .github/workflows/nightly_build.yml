@@ -233,7 +233,7 @@ jobs:
     - name: Notify Rollbar of Deploy Start
       if: contains(needs.workflowvars.outputs.rollbarmissing, 'no')
       id: rollbar_deploy
-      uses: rollbar/github-deploy-action@2.1.1
+      uses: rollbar/github-deploy-action@2.1.2
       with:
         environment: "nightly_build"
         version: ${{ needs.workflowvars.outputs.revision }}
@@ -348,7 +348,7 @@ jobs:
         message: ${{ steps.prep_commit.outputs.commitmsg }}
     - name: Notify Rollbar of Deploy Failure
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
-      uses: rollbar/github-deploy-action@2.1.1
+      uses: rollbar/github-deploy-action@2.1.2
       with:
         environment: "nightly_build"
         version: ${{ needs.workflowvars.outputs.revision }}
@@ -359,7 +359,7 @@ jobs:
         DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
     - name: Notify Rollbar of Deploy Success
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && success() }}
-      uses: rollbar/github-deploy-action@2.1.1
+      uses: rollbar/github-deploy-action@2.1.2
       with:
         environment: "nightly_build"
         version: ${{ needs.workflowvars.outputs.revision }}
@@ -413,7 +413,7 @@ jobs:
     - name: Notify Rollbar of Deploy Start
       if: contains(needs.workflowvars.outputs.rollbarmissing, 'no')
       id: rollbar_deploy
-      uses: rollbar/github-deploy-action@2.1.1
+      uses: rollbar/github-deploy-action@2.1.2
       with:
         environment: "nightly_build_docker"
         version: ${{ needs.workflowvars.outputs.revision }}
@@ -462,7 +462,7 @@ jobs:
           ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:latest
     - name: Notify Rollbar of Deploy Failure
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
-      uses: rollbar/github-deploy-action@2.1.1
+      uses: rollbar/github-deploy-action@2.1.2
       with:
         environment: "nightly_build_docker"
         version: ${{ needs.workflowvars.outputs.revision }}
@@ -473,7 +473,7 @@ jobs:
         DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
     - name: Notify Rollbar of Deploy Success
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && success() }}
-      uses: rollbar/github-deploy-action@2.1.1
+      uses: rollbar/github-deploy-action@2.1.2
       with:
         environment: "nightly_build_docker"
         version: ${{ needs.workflowvars.outputs.revision }}
