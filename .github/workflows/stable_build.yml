@@ -135,7 +135,7 @@ jobs:
         version: latest
         driver-opts: network=host
     - name: Build Docker
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v4
       with:
         context: .
         file: ./Dockerfile
@@ -194,7 +194,7 @@ jobs:
         sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="'$REVISION'"/;s/branch="[A-Za-z0-9._-]+"/branch="'$BRANCH'"/;s/status="[A-Za-z0-9._-]+"/status="release"/' ivy.xml
         echo $?
     - name: Build and Push DockerHub
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v4
       with:
         context: .
         file: ./Dockerfile
