@@ -338,10 +338,9 @@ jobs:
         OLDFILES=$(find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000 && length($1) > 4){ print "./historical/"$1}}' 2>/dev/null | xargs echo)
         echo "##[set-output name=gitrm;]$(echo ${OLDFILES})"
     - name: Commit Changes
-      uses: EndBug/add-and-commit@v7
+      uses: EndBug/add-and-commit@v9
       with:
         cwd: ${{ env.GITHUB_WORKSPACE }}/nb
-        branch: master
         default_author: github_actions
         add: ./PhantomBot-nightly-lin.zip ./PhantomBot-nightly-win.zip ./PhantomBot-nightly-mac.zip ./PhantomBot-nightly-arm-bsd-other.zip ./historical/${{ steps.prep_commit.outputs.gitadd }} ./builds.md ./last_repo_version
         remove: ${{ steps.prep_commit.outputs.gitrm }}
