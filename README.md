@@ -4,9 +4,9 @@
 This repository contains a nightly build of PhantomBot from the latest master branch.  The nightly-build release is built on the latest available Ubuntu environment for GitHub Actions. You can find information about the environment [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/virtual-environments-for-github-hosted-runners#supported-runners-and-hardware-resources).
     
 Five build files are present.
-* _PhantomBot-nightly-lin-runtime.zip_ - Contains the Java environment and launch scripts for Linux 64-bit (x86_64).
-* _PhantomBot-nightly-win-runtime.zip_ - Contains the Java environment and launch scripts for Windows 64-bit (x86_64).
-* _PhantomBot-nightly-mac-runtime.zip_ - Contains the Java environment and launch scripts for macOS 64-bit (Intel processors, x86_64).
+* _PhantomBot-nightly-lin-runtime.zip_ - Contains the Java environment and launch scripts for Linux 64-bit (x86_64, amd64).
+* _PhantomBot-nightly-win-runtime.zip_ - Contains the Java environment and launch scripts for Windows 64-bit (x86_64, amd64).
+* _PhantomBot-nightly-mac-runtime.zip_ - Contains the Java environment and launch scripts for macOS 64-bit (Intel processors, x86_64, amd64).
 * _PhantomBot-nightly-arm64-runtime.zip_ - Contains the Java environment and launch scripts for ARM 64-bit processors (Raspberry Pi Zero 2+, Raspberry Pi 3+, Apple Silicon M1/M2, arm64, aarch64).
 * _PhantomBot-nightly-bot.zip_ - Contains the bot files.
 
@@ -25,7 +25,7 @@ When running this from BSD, you must `chmod u+x launch-bsd.sh`
 
 Windows does not support 32-bit (x86) due to Oracle dropping support for it.
 
-The historical build is a copy of the _PhantomBot-nightly-arm-bsd-other.zip_ package. If you are using 64-bit (x86_64) Windows, Linux, or macOS, you may need to download the latest copy for your platform and then copy the appropriate _launch_ scripts and _java-runtime_ folders into the historical package.
+The historical build is a copy of the _PhantomBot-nightly-bot.zip_ package. If you are using 64-bit (x86_64) Windows, Linux, macOS, or an arm64/aarch64-based platform, you may need to download the latest copy of the runtime for your platform and then copy the appropriate _launch_ scripts and _java-runtime_ folders into the historical package.
 
 # Notice
 Use this nightly build at your own risk!  The master branch is not always fully tested.  The nightly build may not even launch.  There may be new features added which may cause problems with your PhantomBot environment.  Do not take parts of the nightly build and install into an earlier version of PhantomBot unless told to by a developer.  The PhantomBot core, scripts, and web modules are all tightly related.
@@ -42,23 +42,19 @@ Please report any bugs to our Discord at https://discord.gg/YKvMd78. Do ensure t
 * Any changes that you may have made in your environment.  This would include any changes to the scripts, for example.
 
 # Getting Java, OS and PhantomBot Versions from PhantomBot at Startup
-The Java and OS versions are presented when PhantomBot starts up in the Console, some examples:
+The Java and OS versions are presented when PhantomBot starts up in the Console:
 ```
-[05-16-2017 @ 16:42:26.423 GMT] Detected Java 1.8.0_102 running on Linux 4.8.13-100.fc23.x86_64 (amd64)
-
-[05-16-2017 @ 16:47:10.158 GMT] Detected Java 1.8.0_131 running on Windows 10 10.0 (amd64)
-
-[05-16-2017 @ 16:48:48.719 GMT] Detected Java 1.8.0_102 running on Mac OS X 10.12.4 (x86_64)
+[08-18-2023 @ 15:25:28.964 GMT] Detected Java 17.0.8 running on Windows 11 10.0 (amd64)
 ```
 
 The version of PhantomBot as well as the Build Revision is also present at startup:
 ```
-% ./launch.sh 
-[06-30-2017 @ 04:54:18.503 GMT] The working directory is: /usr/local/opt/iobot2
-[06-30-2017 @ 04:54:18.507 GMT] Detected Java 1.8.0_102 running on Linux 4.8.13-100.fc23.x86_64 (amd64)
-[06-30-2017 @ 04:54:18.512 GMT] 
-[06-30-2017 @ 04:54:18.512 GMT] PhantomBot Version: 2.3.7.1-NB-20170629
-[06-30-2017 @ 04:54:18.512 GMT] Build Revision: 5f8f2c4
+C:\Users\someuser\OneDrive\Documents\PhantomBot-NB-08182023> ./launch.bat
+[08-18-2023 @ 15:25:28.886 GMT] The working directory is: C:\Users\someuser\OneDrive\Documents\PhantomBot-NB-08182023
+[08-18-2023 @ 15:25:28.964 GMT] Detected Java 17.0.8 running on Windows 11 10.0 (amd64)
+[08-18-2023 @ 15:25:29.048 GMT] 
+[08-18-2023 @ 15:25:29.059 GMT] PhantomBot Version: NB-08182023 (nightly_build)
+[08-18-2023 @ 15:25:29.060 GMT] Build Revision: 636f8fb
 ```
 
 # Comparing Versions
