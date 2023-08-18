@@ -260,20 +260,36 @@ jobs:
     - name: Create Assets
       env:
         FOLDERFULL: ${{ format('PhantomBot-{0}', needs.workflowvars.outputs.branch) }}
-        FOLDERLIN: PhantomBot-nightly-lin
-        FOLDERWIN: PhantomBot-nightly-win
-        FOLDERMAC: PhantomBot-nightly-mac
-        FOLDERARMBSDOTHER: PhantomBot-nightly-arm-bsd-other
+        FOLDERLIN: PhantomBot-nightly-lin-runtime
+        FOLDERWIN: PhantomBot-nightly-win-runtime
+        FOLDERMAC: PhantomBot-nightly-mac-runtime
+        FOLDERARM64: PhantomBot-nightly-arm64-runtime
+        FOLDERBOT: PhantomBot-nightly-bot
       run: |
         cd ${GITHUB_WORKSPACE}/pb
         mkdir dist/$FOLDERLIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-bsd.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL/java-runtime-linux dist/$FOLDERLIN
+        rsync -rav --progress dist/$FOLDERFULL/launch.sh dist/$FOLDERLIN
+        rsync -rav --progress dist/$FOLDERFULL/launch-service.sh dist/$FOLDERLIN
+        rsync -rav --progress dist/$FOLDERFULL/restartbot-systemctl.sh dist/$FOLDERLIN
+        rsync -rav --progress dist/$FOLDERFULL/restartbot-systemv.sh dist/$FOLDERLIN
         mkdir dist/$FOLDERWIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.sh --exclude restartbot-bsd.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL/java-runtime dist/$FOLDERWIN
+        rsync -rav --progress dist/$FOLDERFULL/launch.bat dist/$FOLDERWIN
+        rsync -rav --progress dist/$FOLDERFULL/launch.ps1 dist/$FOLDERWIN
+        rsync -rav --progress dist/$FOLDERFULL/restartbot-windows.bat dist/$FOLDERWIN
         mkdir dist/$FOLDERMAC
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-bsd.sh --exclude restartbot-docker.sh
-        mkdir dist/$FOLDERARMBSDOTHER
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL/java-runtime-macos dist/$FOLDERMAC
+        rsync -rav --progress dist/$FOLDERFULL/launch.sh dist/$FOLDERMAC
+        rsync -rav --progress dist/$FOLDERFULL/launch-service.sh dist/$FOLDERMAC
+        mkdir dist/$FOLDERARM64
+        rsync -rav --progress dist/$FOLDERFULL/java-runtime-arm64 dist/$FOLDERARM64
+        rsync -rav --progress dist/$FOLDERFULL/launch.sh dist/$FOLDERARM64
+        rsync -rav --progress dist/$FOLDERFULL/launch-service.sh dist/$FOLDERARM64
+        rsync -rav --progress dist/$FOLDERFULL/restartbot-systemctl.sh dist/$FOLDERARM64
+        rsync -rav --progress dist/$FOLDERFULL/restartbot-systemv.sh dist/$FOLDERARM64
+        mkdir dist/$FOLDERBOT
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERBOT --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot.sh --exclude restartbot-docker.sh
         cd dist
         rm -rf $FOLDERFULL
         echo Zip Lin
@@ -297,20 +313,21 @@ jobs:
         cd ..
         mv -v $FOLDERFULL/$FOLDERMAC.zip ./$FOLDERMAC.zip
         rm -rf $FOLDERFULL
-        echo Zip Arm/BSD/Other
-        mv -v $FOLDERARMBSDOTHER $FOLDERFULL
+        echo Zip Bot
+        mv -v $FOLDERBOT $FOLDERFULL
         cd $FOLDERFULL
-        zip -m -9 -X -r $FOLDERARMBSDOTHER.zip $FOLDERFULL
+        zip -m -9 -X -r $FOLDERBOT.zip $FOLDERFULL
         cd ..
-        mv -v $FOLDERFULL/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
+        mv -v $FOLDERFULL/$FOLDERBOT.zip ./$FOLDERBOT.zip
         rm -rf $FOLDERFULL
     - name: Prep Commit
       id: prep_commit
       env:
-        FOLDERLIN: PhantomBot-nightly-lin
-        FOLDERWIN: PhantomBot-nightly-win
-        FOLDERMAC: PhantomBot-nightly-mac
-        FOLDERARMBSDOTHER: PhantomBot-nightly-arm-bsd-other
+        FOLDERLIN: PhantomBot-nightly-lin-runtime
+        FOLDERWIN: PhantomBot-nightly-win-runtime
+        FOLDERMAC: PhantomBot-nightly-mac-runtime
+        FOLDERARM64: PhantomBot-nightly-arm64-runtime
+        FOLDERBOT: PhantomBot-nightly-bot
         REVISION: ${{ needs.workflowvars.outputs.revision }}
         NB_REVISION: ${{ needs.workflowvars.outputs.nb_revision }}
       run: |
@@ -318,9 +335,10 @@ jobs:
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERLIN.zip ./$FOLDERLIN.zip
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERWIN.zip ./$FOLDERWIN.zip
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERMAC.zip ./$FOLDERMAC.zip
-        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
+        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERARM64.zip ./$FOLDERARM64.zip
+        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERBOT.zip ./$FOLDERBOT.zip
         DATEDZIP=PhantomBot-nightly-$(date +%m%d%Y.%H%M%S).zip
-        cp -f ./$FOLDERARMBSDOTHER.zip ./historical/${DATEDZIP}
+        cp -f ./$FOLDERBOT.zip ./historical/${DATEDZIP}
         COMMITSTR="Nightly Build at $(date '+%b %d %H:%M:%S %Y (%Z%z)')"
         if [ "${NB_REVISION}" == "${REVISION}" ]; then
           export BUILD_STR="${COMMITSTR} (Repo: ${REVISION}) (No Changes)"
@@ -342,7 +360,7 @@ jobs:
       with:
         cwd: ${{ env.GITHUB_WORKSPACE }}/nb
         default_author: github_actions
-        add: ./PhantomBot-nightly-lin.zip ./PhantomBot-nightly-win.zip ./PhantomBot-nightly-mac.zip ./PhantomBot-nightly-arm-bsd-other.zip ./historical/${{ steps.prep_commit.outputs.gitadd }} ./builds.md ./last_repo_version
+        add: ./PhantomBot-nightly-lin-runtime.zip ./PhantomBot-nightly-win-runtime.zip ./PhantomBot-nightly-mac-runtime.zip ./PhantomBot-nightly-arm64-runtime.zip ./PhantomBot-nightly-bot.zip ./historical/${{ steps.prep_commit.outputs.gitadd }} ./builds.md ./last_repo_version
         remove: ${{ steps.prep_commit.outputs.gitrm }}
         message: ${{ steps.prep_commit.outputs.commitmsg }}
     - name: Notify Rollbar of Deploy Failure
