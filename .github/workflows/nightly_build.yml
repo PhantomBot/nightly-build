@@ -305,31 +305,26 @@ jobs:
         echo ::group::zip $FOLDERLIN
         mv -v $FOLDERLIN $FOLDERFULL
         zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
-        mv -v $FOLDERFULL/$FOLDERLIN.zip ./$FOLDERLIN.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
         echo ::group::zip $FOLDERWIN
         mv -v $FOLDERWIN $FOLDERFULL
         zip -m -9 -X -r $FOLDERWIN.zip $FOLDERFULL
-        mv -v $FOLDERFULL/$FOLDERWIN.zip ./$FOLDERWIN.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
         echo ::group::zip $FOLDERMAC
         mv -v $FOLDERMAC $FOLDERFULL
         zip -m -9 -X -r $FOLDERMAC.zip $FOLDERFULL
-        mv -v $FOLDERFULL/$FOLDERMAC.zip ./$FOLDERMAC.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
         echo ::group::zip $FOLDERARM64
         mv -v $FOLDERARM64 $FOLDERFULL
         zip -m -9 -X -r $FOLDERARM64.zip $FOLDERFULL
-        mv -v $FOLDERFULL/$FOLDERARM64.zip ./$FOLDERARM64.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
         echo ::group::zip $FOLDERBOT
         mv -v $FOLDERBOT $FOLDERFULL
         zip -m -9 -X -r $FOLDERBOT.zip $FOLDERFULL
-        mv -v $FOLDERFULL/$FOLDERBOT.zip ./$FOLDERBOT.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
     - name: Prep Commit
