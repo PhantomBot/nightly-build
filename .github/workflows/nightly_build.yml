@@ -298,47 +298,37 @@ jobs:
         echo ::endgroup::
         echo ::group::rsync $FOLDERBOT
         mkdir dist/$FOLDERBOT
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERBOT --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL/ dist/$FOLDERBOT --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot.sh --exclude restartbot-docker.sh
         echo ::endgroup::
         cd dist
         rm -rf $FOLDERFULL
         echo ::group::zip $FOLDERLIN
         mv -v $FOLDERLIN $FOLDERFULL
-        cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
-        cd ..
         mv -v $FOLDERFULL/$FOLDERLIN.zip ./$FOLDERLIN.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
         echo ::group::zip $FOLDERWIN
         mv -v $FOLDERWIN $FOLDERFULL
-        cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERWIN.zip $FOLDERFULL
-        cd ..
         mv -v $FOLDERFULL/$FOLDERWIN.zip ./$FOLDERWIN.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
         echo ::group::zip $FOLDERMAC
         mv -v $FOLDERMAC $FOLDERFULL
-        cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERMAC.zip $FOLDERFULL
-        cd ..
         mv -v $FOLDERFULL/$FOLDERMAC.zip ./$FOLDERMAC.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
         echo ::group::zip $FOLDERARM64
         mv -v $FOLDERARM64 $FOLDERFULL
-        cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERARM64.zip $FOLDERFULL
-        cd ..
         mv -v $FOLDERFULL/$FOLDERARM64.zip ./$FOLDERARM64.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
         echo ::group::zip $FOLDERBOT
         mv -v $FOLDERBOT $FOLDERFULL
-        cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERBOT.zip $FOLDERFULL
-        cd ..
         mv -v $FOLDERFULL/$FOLDERBOT.zip ./$FOLDERBOT.zip
         rm -rf $FOLDERFULL
         echo ::endgroup::
