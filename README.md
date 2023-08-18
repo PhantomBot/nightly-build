@@ -3,11 +3,12 @@
 # nightly-build
 This repository contains a nightly build of PhantomBot from the latest master branch.  The nightly-build release is built on the latest available Ubuntu environment for GitHub Actions. You can find information about the environment [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/virtual-environments-for-github-hosted-runners#supported-runners-and-hardware-resources).
     
-Four build files are present.
-* _PhantomBot-nightly-lin.zip_ - Contains the entire bot, but only the Java environment for Linux 64-bit (x86_64).
-* _PhantomBot-nightly-win.zip_ - Contains the entire bot, but only the Java environment for Windows 64-bit (x86_64).
-* _PhantomBot-nightly-mac.zip_ - Contains the entire bot, but only the Java environment for macOS 64-bit (x86_64).
-* _PhantomBot-nightly-arm-bsd-other.zip_ - Contains the entire bot, but no Java environment. Use this for Raspberry Pi, Linux 32-bit (x86) with OpenJDK 11, or BSD. The launch.sh script will provide instructions if you attempt to run it without the proper JDK.
+Five build files are present.
+* _PhantomBot-nightly-lin-runtime.zip_ - Contains the Java environment and launch scripts for Linux 64-bit (x86_64).
+* _PhantomBot-nightly-win-runtime.zip_ - Contains the Java environment and launch scripts for Windows 64-bit (x86_64).
+* _PhantomBot-nightly-mac-runtime.zip_ - Contains the Java environment and launch scripts for macOS 64-bit (Intel processors, x86_64).
+* _PhantomBot-nightly-arm64-runtime.zip_ - Contains the Java environment and launch scripts for ARM 64-bit processors (Raspberry Pi Zero 2+, Raspberry Pi 3+, Apple Silicon M1/M2, arm64, aarch64).
+* _PhantomBot-nightly-bot.zip_ - Contains the bot files.
 
 ### Docker
 PhantomBot publishes official builds to Docker Hub and GitHub Container Registry
