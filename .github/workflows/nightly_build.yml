@@ -267,59 +267,81 @@ jobs:
         FOLDERBOT: PhantomBot-nightly-bot
       run: |
         cd ${GITHUB_WORKSPACE}/pb
+        echo ::group::rsync $FOLDERLIN
         mkdir dist/$FOLDERLIN
         rsync -rav --progress dist/$FOLDERFULL/java-runtime-linux dist/$FOLDERLIN
         rsync -rav --progress dist/$FOLDERFULL/launch.sh dist/$FOLDERLIN
         rsync -rav --progress dist/$FOLDERFULL/launch-service.sh dist/$FOLDERLIN
         rsync -rav --progress dist/$FOLDERFULL/restartbot-systemctl.sh dist/$FOLDERLIN
         rsync -rav --progress dist/$FOLDERFULL/restartbot-systemv.sh dist/$FOLDERLIN
+        echo ::endgroup::
+        echo ::group::rsync $FOLDERWIN
         mkdir dist/$FOLDERWIN
         rsync -rav --progress dist/$FOLDERFULL/java-runtime dist/$FOLDERWIN
         rsync -rav --progress dist/$FOLDERFULL/launch.bat dist/$FOLDERWIN
         rsync -rav --progress dist/$FOLDERFULL/launch.ps1 dist/$FOLDERWIN
         rsync -rav --progress dist/$FOLDERFULL/restartbot-windows.bat dist/$FOLDERWIN
+        echo ::endgroup::
+        echo ::group::rsync $FOLDERMAC
         mkdir dist/$FOLDERMAC
         rsync -rav --progress dist/$FOLDERFULL/java-runtime-macos dist/$FOLDERMAC
         rsync -rav --progress dist/$FOLDERFULL/launch.sh dist/$FOLDERMAC
         rsync -rav --progress dist/$FOLDERFULL/launch-service.sh dist/$FOLDERMAC
+        echo ::endgroup::
+        echo ::group::rsync $FOLDERARM64
         mkdir dist/$FOLDERARM64
         rsync -rav --progress dist/$FOLDERFULL/java-runtime-arm64 dist/$FOLDERARM64
         rsync -rav --progress dist/$FOLDERFULL/launch.sh dist/$FOLDERARM64
         rsync -rav --progress dist/$FOLDERFULL/launch-service.sh dist/$FOLDERARM64
         rsync -rav --progress dist/$FOLDERFULL/restartbot-systemctl.sh dist/$FOLDERARM64
         rsync -rav --progress dist/$FOLDERFULL/restartbot-systemv.sh dist/$FOLDERARM64
+        echo ::endgroup::
+        echo ::group::rsync $FOLDERBOT
         mkdir dist/$FOLDERBOT
         rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERBOT --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot.sh --exclude restartbot-docker.sh
+        echo ::endgroup::
         cd dist
         rm -rf $FOLDERFULL
-        echo Zip Lin
+        echo ::group::zip $FOLDERLIN
         mv -v $FOLDERLIN $FOLDERFULL
         cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
         cd ..
         mv -v $FOLDERFULL/$FOLDERLIN.zip ./$FOLDERLIN.zip
         rm -rf $FOLDERFULL
-        echo Zip Win
+        echo ::endgroup::
+        echo ::group::zip $FOLDERWIN
         mv -v $FOLDERWIN $FOLDERFULL
         cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERWIN.zip $FOLDERFULL
         cd ..
         mv -v $FOLDERFULL/$FOLDERWIN.zip ./$FOLDERWIN.zip
         rm -rf $FOLDERFULL
-        echo Zip Mac
+        echo ::endgroup::
+        echo ::group::zip $FOLDERMAC
         mv -v $FOLDERMAC $FOLDERFULL
         cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERMAC.zip $FOLDERFULL
         cd ..
         mv -v $FOLDERFULL/$FOLDERMAC.zip ./$FOLDERMAC.zip
         rm -rf $FOLDERFULL
-        echo Zip Bot
+        echo ::endgroup::
+        echo ::group::zip $FOLDERARM64
+        mv -v $FOLDERARM64 $FOLDERFULL
+        cd $FOLDERFULL
+        zip -m -9 -X -r $FOLDERARM64.zip $FOLDERFULL
+        cd ..
+        mv -v $FOLDERFULL/$FOLDERARM64.zip ./$FOLDERARM64.zip
+        rm -rf $FOLDERFULL
+        echo ::endgroup::
+        echo ::group::zip $FOLDERBOT
         mv -v $FOLDERBOT $FOLDERFULL
         cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERBOT.zip $FOLDERFULL
         cd ..
         mv -v $FOLDERFULL/$FOLDERBOT.zip ./$FOLDERBOT.zip
         rm -rf $FOLDERFULL
+        echo ::endgroup::
     - name: Prep Commit
       id: prep_commit
       env:
