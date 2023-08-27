@@ -264,7 +264,6 @@ jobs:
         FOLDERWIN: PhantomBot-nightly-win-runtime
         FOLDERMAC: PhantomBot-nightly-mac-runtime
         FOLDERARM64: PhantomBot-nightly-arm64-runtime
-        FOLDERARM32: PhantomBot-nightly-arm32-runtime
         FOLDERBOT: PhantomBot-nightly-bot
       run: |
         cd ${GITHUB_WORKSPACE}/pb
@@ -297,17 +296,9 @@ jobs:
         rsync -rav --progress dist/$FOLDERFULL/restartbot-systemctl.sh dist/$FOLDERARM64
         rsync -rav --progress dist/$FOLDERFULL/restartbot-systemv.sh dist/$FOLDERARM64
         echo ::endgroup::
-        echo ::group::rsync $FOLDERARM32
-        mkdir dist/$FOLDERARM32
-        rsync -rav --progress dist/$FOLDERFULL/java-runtime-arm32 dist/$FOLDERARM32
-        rsync -rav --progress dist/$FOLDERFULL/launch.sh dist/$FOLDERARM32
-        rsync -rav --progress dist/$FOLDERFULL/launch-service.sh dist/$FOLDERARM32
-        rsync -rav --progress dist/$FOLDERFULL/restartbot-systemctl.sh dist/$FOLDERARM32
-        rsync -rav --progress dist/$FOLDERFULL/restartbot-systemv.sh dist/$FOLDERARM32
-        echo ::endgroup::
         echo ::group::rsync $FOLDERBOT
         mkdir dist/$FOLDERBOT
-        rsync -rav --progress dist/$FOLDERFULL/ dist/$FOLDERBOT --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-arm32 --exclude java-runtime-macos--exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL/ dist/$FOLDERBOT --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos--exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-docker.sh
         echo ::endgroup::
         cd dist
         rm -rf $FOLDERFULL
@@ -331,11 +322,6 @@ jobs:
         zip -m -9 -X -r $FOLDERARM64.zip $FOLDERFULL
         rm -rf $FOLDERFULL
         echo ::endgroup::
-        echo ::group::zip $FOLDERARM32
-        mv -v $FOLDERARM32 $FOLDERFULL
-        zip -m -9 -X -r $FOLDERARM32.zip $FOLDERFULL
-        rm -rf $FOLDERFULL
-        echo ::endgroup::
         echo ::group::zip $FOLDERBOT
         mv -v $FOLDERBOT $FOLDERFULL
         zip -m -9 -X -r $FOLDERBOT.zip $FOLDERFULL
@@ -348,7 +334,6 @@ jobs:
         FOLDERWIN: PhantomBot-nightly-win-runtime
         FOLDERMAC: PhantomBot-nightly-mac-runtime
         FOLDERARM64: PhantomBot-nightly-arm64-runtime
-        FOLDERARM32: PhantomBot-nightly-arm32-runtime
         FOLDERBOT: PhantomBot-nightly-bot
         REVISION: ${{ needs.workflowvars.outputs.revision }}
         NB_REVISION: ${{ needs.workflowvars.outputs.nb_revision }}
@@ -358,7 +343,6 @@ jobs:
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERWIN.zip ./$FOLDERWIN.zip
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERMAC.zip ./$FOLDERMAC.zip
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERARM64.zip ./$FOLDERARM64.zip
-        mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERARM32.zip ./$FOLDERARM32.zip
         mv -f ${GITHUB_WORKSPACE}/pb/dist/$FOLDERBOT.zip ./$FOLDERBOT.zip
         DATEDZIP=PhantomBot-nightly-$(date +%m%d%Y.%H%M%S).zip
         cp -f ./$FOLDERBOT.zip ./historical/${DATEDZIP}
