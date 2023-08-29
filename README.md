@@ -8,6 +8,7 @@ Five build files are present.
 * _PhantomBot-nightly-win-runtime.zip_ - Contains the Java environment and launch scripts for Windows 64-bit (x86_64, amd64).
 * _PhantomBot-nightly-mac-runtime.zip_ - Contains the Java environment and launch scripts for macOS 64-bit (Intel processors, x86_64, amd64).
 * _PhantomBot-nightly-arm64-runtime.zip_ - Contains the Java environment and launch scripts for ARM 64-bit processors (Raspberry Pi Zero 2+, Raspberry Pi 3+, Apple Silicon M1/M2, arm64, aarch64).
+* _PhantomBot-nightly-arm32-runtime.zip_ - Contains the Java environment and launch scripts for ARM 32-bit processors (Raspberry Pi 2+, Raspberry Pi 3 with 32-bit OS, armhf, arm/v7).
 * _PhantomBot-nightly-bot.zip_ - Contains the bot files.
 
 ### Docker
