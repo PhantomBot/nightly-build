@@ -348,7 +348,7 @@ jobs:
         FOLDERWIN: PhantomBot-nightly-win-runtime
         FOLDERMAC: PhantomBot-nightly-mac-runtime
         FOLDERARM64: PhantomBot-nightly-arm64-runtime
-        FOLDERARM64: PhantomBot-nightly-arm32-runtime
+        FOLDERARM32: PhantomBot-nightly-arm32-runtime
         FOLDERBOT: PhantomBot-nightly-bot
         REVISION: ${{ needs.workflowvars.outputs.revision }}
         NB_REVISION: ${{ needs.workflowvars.outputs.nb_revision }}
