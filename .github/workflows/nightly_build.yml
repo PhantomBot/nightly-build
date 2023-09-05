@@ -23,12 +23,12 @@ jobs:
       dryrun: ${{ steps.check_pbnb.outputs.dryrun }}
     steps:
     - name: Checkout Nightly Build Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         persist-credentials: false
         path: nb
     - name: Checkout PhantomBot Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: PhantomBot/PhantomBot
         persist-credentials: false
@@ -155,7 +155,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout PhantomBot Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: PhantomBot/PhantomBot
         persist-credentials: false
@@ -180,7 +180,7 @@ jobs:
           - 5000:5000
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: PhantomBot/PhantomBot
         persist-credentials: false
@@ -215,11 +215,11 @@ jobs:
     if: ${{ contains(needs.workflowvars.outputs.shouldbuild, 'yes') && contains(needs.workflowvars.outputs.dryrun, 'no') }}
     steps:
     - name: Checkout Nightly Build Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: nb
     - name: Checkout PhantomBot Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: PhantomBot/PhantomBot
         path: pb
@@ -423,7 +423,7 @@ jobs:
     if: contains(needs.workflowvars.outputs.ispublished, 'no')
     steps:
     - name: Checkout PhantomBot Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: PhantomBot/PhantomBot
         persist-credentials: false
