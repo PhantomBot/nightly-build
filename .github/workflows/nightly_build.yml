@@ -307,7 +307,7 @@ jobs:
         echo ::endgroup::
         echo ::group::rsync $FOLDERBOT
         mkdir dist/$FOLDERBOT
-        rsync -rav --progress dist/$FOLDERFULL/ dist/$FOLDERBOT --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos--exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL/ dist/$FOLDERBOT --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-docker.sh
         echo ::endgroup::
         cd dist
         rm -rf $FOLDERFULL
