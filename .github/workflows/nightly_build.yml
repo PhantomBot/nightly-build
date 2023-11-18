@@ -377,16 +377,16 @@ jobs:
         else
           export BUILD_STR="${COMMITSTR} (Repo: ${REVISION}) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/${NB_REVISION}...${REVISION}))"
         fi
-        echo "##[set-output name=commitmsg;]$(echo ${BUILD_STR})"
+        echo "commitmsg=${BUILD_STR}" >> $GITHUB_OUTPUT
         cat builds.md | perl -e 'while(<STDIN>) { if ($_ =~ /------/ ) { print $_; print "###### $ENV{BUILD_STR}\n"; } else { print $_; } }' > builds.new
         head -25 builds.new > builds.md
         rm -f builds.new
         echo ${REVISION} > last_repo_version
-        echo "##[set-output name=gitadd;]$(echo ${DATEDZIP})"
+        echo "gitadd=${DATEDZIP}" >> $GITHUB_OUTPUT
         cd ${GITHUB_WORKSPACE}/nb/historical
         find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000 && length($1) > 4){ printf("timestamp: %d diff: %d\n%s\n",t, d, s);}}' 2>/dev/null
         OLDFILES=$(find . | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000 && length($1) > 4){ print "./historical/"$1}}' 2>/dev/null | xargs echo)
-        echo "##[set-output name=gitrm;]$(echo ${OLDFILES})"
+        echo "gitrm=${OLDFILES}" >> $GITHUB_OUTPUT
     - name: Commit Changes
       uses: EndBug/add-and-commit@v9
       with:
