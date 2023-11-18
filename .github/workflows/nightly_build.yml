@@ -5,6 +5,14 @@ on:
     - cron: 0 12 * * *
   repository_dispatch:
   workflow_dispatch:
+    inputs:
+      force-git:
+        description: 'Force publish of git artifacts'
+        default: 'No'
+        type: choice
+        options:
+          - 'No'
+          - 'Yes'
 
 jobs:
   workflowvars:
@@ -51,12 +59,13 @@ jobs:
       id: nb_env
       env:
         REVISION: ${{ steps.build_env.outputs.revision }}
+        FORCE_GIT: ${{ github.event.inputs.force-git }}
       run: |
         cd ${GITHUB_WORKSPACE}/nb
         NB_REVISION=$(cat last_repo_version)
         echo ${NB_REVISION}
         echo "nb_revision=${NB_REVISION}" >> $GITHUB_OUTPUT
-        if [ "${REVISION}" == "${NB_REVISION}" ]; then
+        if [ "${REVISION}" == "${NB_REVISION}" ] && [ "${FORCE_GIT}" != "Yes" ]; then
           ISOLD=find ./historical -type f -printf "%T@ %p\n" | sort -n | cut -d' ' -f 2- | tail -n 1 | awk '{s=gensub(/.+-([0-9]{2})([0-9]{2})([0-9]{4})\.([0-9]{2})([0-9]{2})([0-9]{2})\.zip/, "\\3 \\1 \\2 \\4 \\5 \\6", ""); t=mktime(s); d=systime() - t; if (d >= 1728000){ print("true"); } else { print("false"); }}' 2>/dev/null
           if [ "${ISOLD}" == "true" ]; then
             echo "Nightly build is old, building anyway..."
