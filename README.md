@@ -1,4 +1,4 @@
-# <img alt="PhantomBot" src="https://phantombot.tv/img/new-logo-dark-v2.png" width="600px"/>
+# <img alt="PhantomBot" src="https://phantombot.dev/common/images/brand.png" width="600px"/>
 
 # nightly-build
 This repository contains a nightly build of PhantomBot from the latest master branch.  The nightly-build release is built on the latest available Ubuntu environment for GitHub Actions. You can find information about the environment [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/virtual-environments-for-github-hosted-runners#supported-runners-and-hardware-resources).
