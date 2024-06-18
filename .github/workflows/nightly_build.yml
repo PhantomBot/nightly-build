@@ -203,7 +203,7 @@ jobs:
         version: latest
         driver-opts: network=host
     - name: Build Docker
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         file: ./Dockerfile
@@ -479,7 +479,7 @@ jobs:
         echo $?
     - name: Build and Push DockerHub
       if: contains(needs.workflowvars.outputs.dockermissing, 'no')
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         file: ./Dockerfile
@@ -495,7 +495,7 @@ jobs:
           ${{ secrets.DOCKER_REPO }}:latest
     - name: Build and Push GitHub Containers
       if: contains(needs.workflowvars.outputs.dryrun, 'no')
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         file: ./Dockerfile
