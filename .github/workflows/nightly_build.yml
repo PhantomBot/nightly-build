@@ -390,6 +390,7 @@ jobs:
     - name: Commit Changes
       uses: EndBug/add-and-commit@v9
       with:
+        fetch: false
         cwd: ${{ env.GITHUB_WORKSPACE }}/nb
         default_author: github_actions
         add: ./PhantomBot-nightly-lin-runtime.zip ./PhantomBot-nightly-win-runtime.zip ./PhantomBot-nightly-mac-runtime.zip ./PhantomBot-nightly-arm64-runtime.zip ./PhantomBot-nightly-arm32-runtime.zip ./PhantomBot-nightly-bot.zip ./historical/${{ steps.prep_commit.outputs.gitadd }} ./builds.md ./last_repo_version
