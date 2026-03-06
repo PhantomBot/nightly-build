@@ -198,7 +198,7 @@ jobs:
       with:
         platforms: linux/amd64
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
       with:
         version: latest
         driver-opts: network=host
@@ -442,7 +442,7 @@ jobs:
       with:
         platforms: linux/amd64,linux/arm64,linux/arm/v7
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
       with:
         version: latest
     - name: Login to DockerHub Registry
