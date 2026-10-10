@@ -2,6 +2,7 @@
 
 ###### This file serves as a record of all of the nightly builds that are performed and provides the time the build occurred as well as the Git Repository version.
 -------------------------------------------------------------------------------------------------------------
+###### Nightly Build at Oct 10 17:04:07 2026 (UTC+0000) (Repo: 5b747d0) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/4ac5c2f...5b747d0))
 ###### Nightly Build at Oct 04 16:33:28 2026 (UTC+0000) (Repo: 4ac5c2f) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/852f409...4ac5c2f))
 ###### Nightly Build at Oct 03 15:49:44 2026 (UTC+0000) (Repo: 852f409) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/43bd51d...852f409))
 ###### Nightly Build at Sep 26 15:56:39 2026 (UTC+0000) (Repo: 43bd51d) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/75479b5...43bd51d))
@@ -22,4 +23,3 @@
 ###### Nightly Build at Jul 06 15:34:28 2026 (UTC+0000) (Repo: fbaba80) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/afadd6d...fbaba80))
 ###### Nightly Build at Jul 04 13:27:09 2026 (UTC+0000) (Repo: afadd6d) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/ff03743...afadd6d))
 ###### Nightly Build at Jul 02 14:03:31 2026 (UTC+0000) (Repo: ff03743) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/66e98f0...ff03743))
-###### Nightly Build at Jun 29 15:47:18 2026 (UTC+0000) (Repo: 66e98f0) ([View Changes](https://github.com/PhantomBot/PhantomBot/compare/d9c7652...66e98f0))
