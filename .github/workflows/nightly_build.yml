@@ -20,8 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       dockermissing: ${{ steps.check_docker_credentials.outputs.missingsecrets }}
-      rollbarmissing: ${{ steps.check_rollbar_credentials.outputs.missingsecrets }}
-      servermissing: ${{ steps.check_server_credentials.outputs.missingsecrets }}
       branch: ${{ steps.build_env.outputs.branch }}
       revision: ${{ steps.build_env.outputs.revision }}
       ghcrrepo: ${{ steps.build_env.outputs.ghcrrepo }}
@@ -93,34 +91,6 @@ jobs:
           echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         elif [ "${DOCKER_REPO}" == "" ]; then
           echo "Missing Repo"
-          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
-        else
-          echo "All secrets present"
-          echo "missingsecrets=no" >> $GITHUB_OUTPUT
-        fi
-    - name: Check Rollbar Credentials
-      id: check_rollbar_credentials
-      env:
-        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
-      run: |
-        if [ "${ROLLBAR_ACCESS_TOKEN}" == "" ]; then
-          echo "Missing Rollbar Access Token"
-          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
-        else
-          echo "All secrets present"
-          echo "missingsecrets=no" >> $GITHUB_OUTPUT
-        fi
-    - name: Check Rollbar Passthrough Server Credentials
-      id: check_server_credentials
-      env:
-        ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
-        URL: ${{ secrets.SERVER_URL }}
-      run: |
-        if [ "${ACCESS_TOKEN}" == "" ]; then
-          echo "Missing Access Token"
-          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
-        elif [ "${URL}" == "" ]; then
-          echo "Missing URL"
           echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         else
           echo "All secrets present"
@@ -239,17 +209,6 @@ jobs:
         java-version: 17
     - name: Set up Ant
       run: sudo apt-get install ant
-    - name: Notify Rollbar of Deploy Start
-      if: contains(needs.workflowvars.outputs.rollbarmissing, 'no')
-      id: rollbar_deploy
-      uses: rollbar/github-deploy-action@2.1.2
-      with:
-        environment: "nightly_build"
-        version: ${{ needs.workflowvars.outputs.revision }}
-        status: "started"
-      env:
-        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
-        ROLLBAR_USERNAME: ${{ github.actor }}
     - name: Prep Ant script
       env:
         BRANCH: ${{ needs.workflowvars.outputs.branch }}
@@ -260,12 +219,10 @@ jobs:
         echo $?
     - name: Build with Ant
       env:
-        ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
-        ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
         BRANCH: ${{ needs.workflowvars.outputs.branch }}
       run: |
         cd ${{ github.workspace }}/pb
-        ant -noinput -Dbuildtype=nightly_build -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -Dversion=$BRANCH -buildfile build.xml jar
+        ant -noinput -Dbuildtype=nightly_build -Dversion=$BRANCH -buildfile build.xml jar
     - name: Create Assets
       env:
         FOLDERFULL: ${{ format('PhantomBot-{0}', needs.workflowvars.outputs.branch) }}
@@ -396,36 +353,6 @@ jobs:
         add: ./PhantomBot-nightly-lin-runtime.zip ./PhantomBot-nightly-win-runtime.zip ./PhantomBot-nightly-mac-runtime.zip ./PhantomBot-nightly-arm64-runtime.zip ./PhantomBot-nightly-arm32-runtime.zip ./PhantomBot-nightly-bot.zip ./historical/${{ steps.prep_commit.outputs.gitadd }} ./builds.md ./last_repo_version
         remove: ${{ steps.prep_commit.outputs.gitrm }}
         message: ${{ steps.prep_commit.outputs.commitmsg }}
-    - name: Notify Rollbar of Deploy Failure
-      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
-      uses: rollbar/github-deploy-action@2.1.2
-      with:
-        environment: "nightly_build"
-        version: ${{ needs.workflowvars.outputs.revision }}
-        status: "failed"
-      env:
-        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
-        ROLLBAR_USERNAME: ${{ github.actor }}
-        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
-    - name: Notify Rollbar of Deploy Success
-      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && success() }}
-      uses: rollbar/github-deploy-action@2.1.2
-      with:
-        environment: "nightly_build"
-        version: ${{ needs.workflowvars.outputs.revision }}
-        status: "succeeded"
-      env:
-        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
-        ROLLBAR_USERNAME: ${{ github.actor }}
-        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
-    - name: Update Allowed Rollbar Versions
-      if: ${{ contains(needs.workflowvars.outputs.servermissing, 'no') && success() }}
-      env:
-        ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
-        URL: ${{ secrets.SERVER_URL }}
-        VERSION: ${{ needs.workflowvars.outputs.revision }}
-      run: |
-        curl -X POST $URL -H "x-access-token: $ACCESS_TOKEN" -H "Content-Type: application/json; charset=UTF-8" -d "{\"type\":\"nightly_build\",\"version\":\"$VERSION\"}"
   docker:
     name: Docker build on ubuntu-latest
     runs-on: ubuntu-latest
@@ -460,17 +387,6 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
         logout: true
-    - name: Notify Rollbar of Deploy Start
-      if: contains(needs.workflowvars.outputs.rollbarmissing, 'no')
-      id: rollbar_deploy
-      uses: rollbar/github-deploy-action@2.1.2
-      with:
-        environment: "nightly_build_docker"
-        version: ${{ needs.workflowvars.outputs.revision }}
-        status: "started"
-      env:
-        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
-        ROLLBAR_USERNAME: ${{ github.actor }}
     - name: Prep Ant script
       env:
         BRANCH: ${{ needs.workflowvars.outputs.branch }}
@@ -490,7 +406,7 @@ jobs:
         cache-to: type=gha,mode=max
         build-args: |
           PROJECT_VERSION=${{ needs.workflowvars.outputs.branch }}
-          ANT_ARGS=-Dbuildtype=nightly_build -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }} -Dversion=${{ needs.workflowvars.outputs.branch }}
+          ANT_ARGS=-Dbuildtype=nightly_build -Dversion=${{ needs.workflowvars.outputs.branch }}
         tags: |
           ${{ secrets.DOCKER_REPO }}:${{ needs.workflowvars.outputs.revision }}
           ${{ secrets.DOCKER_REPO }}:latest
@@ -506,37 +422,7 @@ jobs:
         cache-to: type=gha,mode=max
         build-args: |
           PROJECT_VERSION=${{ needs.workflowvars.outputs.branch }}
-          ANT_ARGS=-Dbuildtype=nightly_build -Dfallback.revision=${{ needs.workflowvars.outputs.revision }} -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }} -Dversion=${{ needs.workflowvars.outputs.branch }}
+          ANT_ARGS=-Dbuildtype=nightly_build -Dfallback.revision=${{ needs.workflowvars.outputs.revision }} -Dversion=${{ needs.workflowvars.outputs.branch }}
         tags: |
           ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:${{ needs.workflowvars.outputs.revision }}
           ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:latest
-    - name: Notify Rollbar of Deploy Failure
-      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
-      uses: rollbar/github-deploy-action@2.1.2
-      with:
-        environment: "nightly_build_docker"
-        version: ${{ needs.workflowvars.outputs.revision }}
-        status: "failed"
-      env:
-        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
-        ROLLBAR_USERNAME: ${{ github.actor }}
-        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
-    - name: Notify Rollbar of Deploy Success
-      if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && success() }}
-      uses: rollbar/github-deploy-action@2.1.2
-      with:
-        environment: "nightly_build_docker"
-        version: ${{ needs.workflowvars.outputs.revision }}
-        status: "succeeded"
-      env:
-        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
-        ROLLBAR_USERNAME: ${{ github.actor }}
-        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
-    - name: Update Allowed Rollbar Versions
-      if: ${{ contains(needs.workflowvars.outputs.servermissing, 'no') && success() }}
-      env:
-        ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
-        URL: ${{ secrets.SERVER_URL }}
-        VERSION: ${{ needs.workflowvars.outputs.revision }}
-      run: |
-        curl -X POST $URL -H "x-access-token: $ACCESS_TOKEN" -H "Content-Type: application/json; charset=UTF-8" -d "{\"type\":\"nightly_build_docker\",\"version\":\"$VERSION\"}"
